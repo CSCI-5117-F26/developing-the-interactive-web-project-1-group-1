@@ -4,13 +4,13 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 
 ## App Info:
 
-* Team Name: TODO
+* Team Name: Yarakani
 * App Name: TODO
 * App Link: <https://TODO.com/>
 
 ### Students
 
-* First Last, x500@umn.edu
+* Nipun Bhatnagar, bhatn058@umn.edu
 * ...
 
 
