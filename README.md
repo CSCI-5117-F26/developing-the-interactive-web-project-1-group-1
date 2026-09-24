@@ -13,6 +13,7 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 * Nipun Bhatnagar, bhatn058@umn.edu
 * Yassir Abdalla, abdal167@umn.edu
 * Ray Amberg, amber079@umn.edu
+* Kane Stirling stirl027@umn.edu
 
 
 ## Key Features
