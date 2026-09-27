@@ -41,13 +41,9 @@ along with a very brief caption:**
 
 ## Mock-up 
 
-There are a few tools for mock-ups. Paper prototypes (low-tech, but effective and cheap), Digital picture edition software (gimp / photoshop / etc.), or dedicated tools like moqups.com (I'm calling out moqups here in particular since it seems to strike the best balance between "easy-to-use" and "wants your money" -- the free teir isn't perfect, but it should be sufficient for our needs with a little "creative layout" to get around the page-limit)
-
-In this space please either provide images (around 4) showing your prototypes, OR, a link to an online hosted mock-up tool like moqups.com
-
 **[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
 
-### 1. Home feed
+### 1. Home page
 
 ![Home feed mockup](docs/mockups/1-home-feed.png)
 
@@ -59,7 +55,7 @@ In this space please either provide images (around 4) showing your prototypes, O
 
 *Detail view for a single found item: photo, description, where to pick it up with a map image, and a comment section Edit and delet buttons only appear when the user is the original creator of the post*
 
-### 3. Post found item
+### 3. Create post
 
 ![Post found item mockup](docs/mockups/3-post-found-item.png)
 
