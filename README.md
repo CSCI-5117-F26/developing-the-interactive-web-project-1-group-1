@@ -41,8 +41,6 @@ along with a very brief caption:**
 
 ## Mock-up 
 
-**[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
-
 ### 1. Home page
 
 ![Home feed mockup](docs/mockups/1-home-feed.png)
