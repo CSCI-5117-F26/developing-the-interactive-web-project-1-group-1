@@ -46,7 +46,35 @@ In this space please either provide images (around 4) showing your prototypes, O
 
 **[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
 
-![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
+### 1. Home feed
+
+![Home feed mockup](docs/mockups/1-home-feed.png)
+
+*Main page most users will experience. Displays recently found items with filters for specific building and item types*
+
+### 2. Item page
+
+![Item page mockup](docs/mockups/2-item-page.png)
+
+*Detail view for a single found item: photo, description, where to pick it up with a map image, and a comment section Edit and delet buttons only appear when the user is the original creator of the post*
+
+### 3. Post found item
+
+![Post found item mockup](docs/mockups/3-post-found-item.png)
+
+*Form for creating a post including a generated textboc at the bottom prompting the user to drop off the item*
+
+### 4. Log in
+
+![Log in mockup](docs/mockups/4-log-in-basic.png)
+
+*Sign-in page restricted to umn email*
+
+### 5. My posts
+
+![My posts mockup](docs/mockups/5-my-posts.png)
+
+*A user's own posted items in a table, with comment counts and edit/delete actions for each one.*
 
 
 ## External Dependencies
