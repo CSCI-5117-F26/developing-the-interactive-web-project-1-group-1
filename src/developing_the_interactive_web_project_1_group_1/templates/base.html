@@ -11,18 +11,31 @@ crossorigin="anonymous">
     <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <title>Base HTML</title>
+    <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
     <header>
-      Header Block
+    <div class="header-left">
+      <img src="{{ url_for('static', filename='logo') }}" alt="logo" /> <a href="#">Found items</a> <a href="#">L&amp;F locations</a>
+    </div>
+    
+    <div class="header-right">
+      <button>+ I found something</button>
+
+      <select name="account" id="account">
+        <option value="">Account</option>
+        <option value="settings">Settings</option>
+        <option value="profile">Profile</option>
+      </select> 
+    </div>
     </header>
     <main>
     {% block main %}{% endblock %}
     </main>
 
     <footer>
-      Footer Block
+      Footer Block <br>
+      Fleshing out footer
     </footer>
     {% block scripts %}{% endblock %}
   </body>
