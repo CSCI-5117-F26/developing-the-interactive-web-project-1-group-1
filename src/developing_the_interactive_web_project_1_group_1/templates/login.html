@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Login Title Here{% endblock %}
 {% block main %}
-Main Block for login.html
+<div class="login-box">
+  <h1>Login</h1>
+  <form method="post" action="#">
+    <label for="email">UMN e-mail</label>
+    <input type="email" id="email" name="email" placeholder="x500@umn.edu" required>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Log in</button>
+  </form>
+  <p>No account? <a href="#">Sign Up</a> | <a href="#">Forgot Password</a></p>
+</div>
 {% endblock %}
