@@ -1,11 +1,33 @@
 {% extends "base.html" %}
 {% block title %}Root title goes here{% endblock %}
 {% block main %}
-Main Block for index.html
-<ul>
-<li>Flesh</li>
-<li>Flesh</li>
-<li>Flesh</li>
-<li>Ignore the whitespace below for now</li>
-</ul>
+<h1>Recently found on campus</h1>
+<p>Search by keyword, or filter by building and item type</p>
+<form action="#" method="get" role="search">
+<input type="search" id="q" name="q" value="" placeholder="Search items... e.g. 'blue water bottle'">
+<select id="building" name="building">
+  <option value="">Building: Any</option>
+  <option value="Keller">Keller Hall</option>
+  <option value="Bruininks">Bruininks Hall</option>
+</select>
+<select id="item_type" name="item_type">
+  <option value="">Item Type: Any</option>
+  <option value="clothing">Clothing</option>
+  <option value="keys">Keys</option>
+</select>
+</form>
+
+<h2>Example Item Card</h2>
+<div class="item-card">
+  <img src="#" alt="photo of item" />
+  <h3 class="item-title">Item Title</h3>
+  <ul class="tags">
+    <li>Location</li>
+    <li>Item Type 1</li>
+    <li>Item Type 2</li>
+  </div>
+  <p>Posted X hours ago</p>
+</div>
+
+<button>Load More</button>
 {% endblock %}
