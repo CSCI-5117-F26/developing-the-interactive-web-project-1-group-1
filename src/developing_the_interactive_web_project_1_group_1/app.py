@@ -1,4 +1,5 @@
 import os
+from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for
@@ -16,6 +17,16 @@ oauth.register(
     client_kwargs={"scope": "openid profile email"},
     server_metadata_url=f'https://{os.environ["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
 )
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated
+
+
 
 @app.route('/')
 def index():
@@ -43,10 +54,12 @@ def logout():
     )
 
 @app.route('/create-post', methods=['GET', 'POST'])
+@login_required
 def create_post():
     return render_template('create_post.html')
 
 @app.route('/my-posts')
+@login_required
 def my_posts():
     # demo data until we have a database
     posts = [
