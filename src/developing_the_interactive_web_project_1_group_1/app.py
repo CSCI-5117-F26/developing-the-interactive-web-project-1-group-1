@@ -1,6 +1,21 @@
-from flask import Flask, request, render_template
+import os
+from authlib.integrations.flask_client import OAuth
+from dotenv import load_dotenv
+from flask import Flask, request, render_template, redirect, session, url_for
+
+load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.environ["FLASK_SECRET_KEY"]
+
+oauth = OAuth(app)
+oauth.register(
+    "auth0",
+    client_id=os.environ["AUTH0_CLIENT_ID"],
+    client_secret=os.environ["AUTH0_CLIENT_SECRET"],
+    client_kwargs={"scope": "openid profile email"},
+    server_metadata_url=f'https://{os.environ["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
+)
 
 @app.route('/')
 def index():
@@ -8,7 +23,24 @@ def index():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return oauth.auth0.authorize_redirect(
+        redirect_uri=url_for('callback', _external=True)
+    )
+
+@app.route('/callback')
+def callback():
+    token = oauth.auth0.authorize_access_token()
+    session['user'] = token
+    return redirect(url_for('index'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return_to = url_for('index', _external=True)
+    return redirect(
+        f'https://{os.environ["AUTH0_DOMAIN"]}/v2/logout'
+        f'?returnTo={return_to}&client_id={os.environ["AUTH0_CLIENT_ID"]}'
+    )
 
 @app.route('/create-post', methods=['GET', 'POST'])
 def create_post():
