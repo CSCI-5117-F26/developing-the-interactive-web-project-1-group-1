@@ -69,7 +69,8 @@ button:hover {
 }
 
 input,
-select {
+select,
+textarea {
   padding: 0.55rem 0.8rem;
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
@@ -149,6 +150,33 @@ main {
   color: var(--white);
   text-align: center;
   font-size: 0.85rem;
+}
+
+/* create post page */
+.post-page {
+  max-width: 640px;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+}
+
+.field img {
+  display: block;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 @media (max-width: 700px) {
