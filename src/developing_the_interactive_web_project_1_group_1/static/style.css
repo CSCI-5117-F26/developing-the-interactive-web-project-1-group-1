@@ -1,0 +1,170 @@
+:root {
+  --white: #ffffff;
+  --off-white: #fafaf8;
+  --black: #1a1a1a;
+  --maroon: #7a0019;
+  --yellow: #ffcc33;
+  --border: #e3e3e3;
+  --radius: 8px;
+  --page-width: 1200px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--off-white);
+  color: var(--black);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--maroon);
+}
+
+/* buttons + form controls, shared by every page */
+button {
+  padding: 0.55rem 1.1rem;
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* for the standout button like "I found something" */
+.btn-accent {
+  border-color: var(--maroon);
+  background: var(--maroon);
+  color: var(--yellow);
+}
+
+.btn-accent:hover {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--maroon);
+}
+
+input,
+select {
+  padding: 0.55rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+}
+
+/* header */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  border-top: 4px solid var(--maroon);
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo {
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius);
+  background: var(--maroon);
+  color: var(--yellow);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  padding: 0.25rem 0;
+  color: var(--black);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--maroon);
+}
+
+.account-select {
+  border-color: var(--black);
+  border-radius: 999px;
+  padding-left: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* main content */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* footer */
+.site-footer {
+  padding: 1.5rem;
+  border-top: 4px solid var(--yellow);
+  background: var(--maroon);
+  color: var(--white);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .header-left,
+  .header-right {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1.25rem 1rem;
+  }
+}

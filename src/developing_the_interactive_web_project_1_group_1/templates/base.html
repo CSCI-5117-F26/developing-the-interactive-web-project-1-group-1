@@ -14,26 +14,31 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <header>
-    <div class="header-left">
-      <img src="{{ url_for('static', filename='logo') }}" alt="logo" /> <a href="#">Found items</a> <a href="#">L&amp;F locations</a>
-    </div>
-    
-    <div class="header-right">
-      <button>+ I found something</button>
+    <header class="site-header">
+      <div class="header-left">
+        <a href="{{ url_for('index') }}" class="logo">LOGO</a>
+        <nav class="nav-links">
+          <a href="#">Found items</a>
+          <a href="#">L&amp;F locations</a>
+        </nav>
+      </div>
 
-      <select name="account" id="account">
-        <option value="">Account</option>
-        <option value="settings">Settings</option>
-        <option value="profile">Profile</option>
-      </select> 
-    </div>
+      <div class="header-right">
+        <button class="btn-accent">+ I found something</button>
+
+        <select name="account" id="account" class="account-select">
+          <option value="">Account</option>
+          <option value="settings">Settings</option>
+          <option value="profile">Profile</option>
+        </select>
+      </div>
     </header>
+
     <main>
     {% block main %}{% endblock %}
     </main>
 
-    <footer>
+    <footer class="site-footer">
       Footer Block <br>
       Fleshing out footer
     </footer>
