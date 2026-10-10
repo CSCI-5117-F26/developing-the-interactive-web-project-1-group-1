@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from clip_search import embed_text, sim_score
 
 app = Flask(__name__)
 
@@ -24,5 +25,10 @@ def my_posts():
     ]
     return render_template('my_posts.html', posts=posts)
 
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get("query","").strip()
+    query_vec = embed_text(query)
+    # get query, emded text, get images and cal sim score, return higest sim score
 if __name__ == '__main__':
     app.run() 
