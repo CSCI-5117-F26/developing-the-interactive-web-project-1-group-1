@@ -3,6 +3,14 @@
 {% block main %}
 <h1>Recently found on campus</h1>
 <p>Search by keyword, or filter by building and item type</p>
+
+<form action="{{ url_for('test_upload') }}" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="photo">Photo</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+    <button type="submit" class="btn-accent">Post item</button>
+  </form>
 <form action="{{url_for('search')}}" method="get" role="search">
 <input type="search" id="q" name="q" value="{{query}}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
