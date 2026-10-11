@@ -18,7 +18,18 @@
 <button type="submit">Search</button>
 </form>
 {% for result in results %}
-<p>{{ result }}</p>
+<div class="item-card">
+  <img src="{{ result.img_url }}" alt="photo of item" />
+  <h3 class="item-title">{{ result.title }}</h3>
+  <ul class="tags">
+    <li>Location</li>
+    <li>{{ result.location }}</li>
+    {% for type in result.item_type %}
+    <li> {{type}} </li>
+    {% endfor%}
+  </ul>
+  <p>Posted {{result.posted_ago}} hours ago</p>
+</div>
 {% else %}
 <p>No results found.</p>
 {% endfor %}

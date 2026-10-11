@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from clip_search import embed_text, sim_score
 import numpy as np
+# import some db package and run setup
 
 app = Flask(__name__)
 
@@ -39,6 +40,16 @@ def search():
     # idxs = np.argsort(-scores)[:10]
     # render_template("some template", query = query , 
     # results = [{"image" : imgs[i]} for i in idxs])
-    return render_template("index.html", query = query , results = query )
+
+    results = [
+        {
+            "img_url": "https://picsum.photos/400/300",
+            "title": "Test Title",
+            "location": "Keller",
+            "item_type": ["item Type 1", "item Type 2"],
+            "posted_ago": "3"
+        }
+    ]
+    return render_template("index.html", query = query , results = results )
 if __name__ == '__main__':
     app.run() 
