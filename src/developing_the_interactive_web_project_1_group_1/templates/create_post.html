@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Post an item{% endblock %}
+{% block main %}
+<div class="post-page">
+  <h1>Post an item</h1>
+  <p>Fill out our details of item found.</p>
+
+  <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="photo">Photo</label>
+      <img src="https://picsum.photos/400/300" alt="">
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+
+    <div class="field">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="e.g. Black AirPods case" required>
+    </div>
+
+    <div class="field">
+      <label for="building">Lost &amp; Found location</label>
+      <select id="building" name="building" required>
+        <option value="">Choose building...</option>
+        <option value="Keller">Keller Hall</option>
+        <option value="Bruininks">Bruininks Hall</option>
+        <option value="Walter">Walter Library</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="item_type">Item type</label>
+      <select id="item_type" name="item_type" required>
+        <option value="">Choose type...</option>
+        <option value="clothing">Clothing</option>
+        <option value="keys">Keys</option>
+        <option value="electronics">Electronics</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="details">More details (optional)</label>
+      <textarea id="details" name="details" rows="4" placeholder="Some color Item. Found at some location"></textarea>
+    </div>
+
+    <div>
+      <h2>Drop off at Loft and Found</h2>
+      <p>The Lost &amp; Found for [selected building] is at [location].</p>
+    </div>
+
+    <button type="submit" class="btn-accent">Post item</button>
+    <a href="{{ url_for('index') }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}
