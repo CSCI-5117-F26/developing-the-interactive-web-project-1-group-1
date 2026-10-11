@@ -3,8 +3,8 @@
 {% block main %}
 <h1>Recently found on campus</h1>
 <p>Search by keyword, or filter by building and item type</p>
-<form action="#" method="get" role="search">
-<input type="search" id="q" name="q" value="" placeholder="Search items... e.g. 'blue water bottle'">
+<form action="{{url_for('search')}}" method="get" role="search">
+<input type="search" id="q" name="q" value="{{query}}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
   <option value="">Building: Any</option>
   <option value="Keller">Keller Hall</option>
@@ -15,9 +15,14 @@
   <option value="clothing">Clothing</option>
   <option value="keys">Keys</option>
 </select>
+<button type="submit">Search</button>
 </form>
-
-<h2>Example Item Card</h2>
+{% for result in results %}
+<p>{{ result }}</p>
+{% else %}
+<p>No results found.</p>
+{% endfor %}
+<!-- <h2>Example Item Card</h2>
 <div class="item-card">
   <img src="https://picsum.photos/400/300" alt="photo of item" />
   <h3 class="item-title">Item Title</h3>
@@ -27,7 +32,7 @@
     <li>Item Type 2</li>
   </ul>
   <p>Posted X hours ago</p>
-</div>
+</div> -->
 
 <button>Load More</button>
 {% endblock %}

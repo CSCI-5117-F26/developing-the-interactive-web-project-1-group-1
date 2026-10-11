@@ -29,16 +29,16 @@ def my_posts():
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get("q","").strip()
-    query_vec = embed_text(query)
-    # get query, emded text, get images and cal sim score, return higest sim score
-    # GET IMAGE VECTORS FROM DB
-    #imgs = filter from db
-    imgs = None
-    img_matrix = np.stack([np.frombuffer(img.clip_embedding, dtype=np.float32) for img in imgs])
-    scores = img_matrix @ query_vec
-    idxs = np.argsort(-scores)[:10]
-    render_template("some template", query = query , 
-    results = [{"image" : imgs[i]} for i in idxs])
-
+    # query_vec = embed_text(query)
+    # # get query, emded text, get images and cal sim score, return higest sim score
+    # # GET IMAGE VECTORS FROM DB
+    # #imgs = filter from db
+    # imgs = None
+    # img_matrix = np.stack([np.frombuffer(img.clip_embedding, dtype=np.float32) for img in imgs])
+    # scores = img_matrix @ query_vec
+    # idxs = np.argsort(-scores)[:10]
+    # render_template("some template", query = query , 
+    # results = [{"image" : imgs[i]} for i in idxs])
+    return render_template("index.html", query = query , results = query )
 if __name__ == '__main__':
     app.run() 
