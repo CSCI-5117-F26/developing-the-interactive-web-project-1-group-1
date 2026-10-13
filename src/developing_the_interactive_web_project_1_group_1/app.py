@@ -3,11 +3,13 @@ from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for
+import database
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
+database.setup()
 
 oauth = OAuth(app)
 oauth.register(
