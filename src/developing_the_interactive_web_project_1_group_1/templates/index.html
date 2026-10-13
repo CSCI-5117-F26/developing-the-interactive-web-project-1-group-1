@@ -3,8 +3,16 @@
 {% block main %}
 <h1>Recently found on campus</h1>
 <p>Search by keyword, or filter by building and item type</p>
-<form action="#" method="get" role="search">
-<input type="search" id="q" name="q" value="" placeholder="Search items... e.g. 'blue water bottle'">
+
+<form action="{{ url_for('test_upload') }}" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="photo">Photo</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+    <button type="submit" class="btn-accent">Post item</button>
+  </form>
+<form action="{{url_for('search')}}" method="get" role="search">
+<input type="search" id="q" name="q" value="{{query}}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
   <option value="">Building: Any</option>
   <option value="Keller">Keller Hall</option>
@@ -15,7 +23,27 @@
   <option value="clothing">Clothing</option>
   <option value="keys">Keys</option>
 </select>
+<button type="submit">Search</button>
 </form>
+
+{% for result in results %}
+<div class="item-card">
+  <img src="{{ result.img_url }}" alt="photo of item" />
+  <h3 class="item-title">{{ result.title }}</h3>
+  <ul class="tags">
+    <li>Location</li>
+    <li>{{ result.location }}</li>
+    {% for type in result.item_type %}
+    <li> {{type}} </li>
+    {% endfor%}
+  </ul>
+  <p>Posted {{result.posted_ago}} hours ago</p>
+</div>
+{% else %}
+<p>No results found.</p>
+{% endfor %}
+ <h2>Example Item Card</h2>
+
 
 <h2>Example Dummy Items</h2>
 {# This following dummy data should be replaced with actual items from the
@@ -36,6 +64,7 @@ database once we have that implemented #}
                   "tags": ["books", "things", "stuff"]}]%} 
 
 {% for item in items %}
+
 <div class="item-card">
   <img src="{{ item.image_url }}" alt="photo of item" />
   <h3 class="item-title">{{ item.title }}</h3>
@@ -46,8 +75,12 @@ database once we have that implemented #}
     {% endfor %}
   </ul>
   <p>Posted X hours ago</p>
+
+</div> 
+
 </div>
 {% endfor %}
+
 
 <button>Load More</button>
 {% endblock %}
