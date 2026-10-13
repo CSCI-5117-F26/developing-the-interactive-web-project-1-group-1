@@ -10,7 +10,7 @@ CREATE TABLE user(
 /*NOTE you have to check the file type in server before sending...
 File type validation on server side, */
 CREATE TABLE images(
-photo_id SEIAL PRIMARY KEY,
+photo_id SERIAL PRIMARY KEY,
 image_name VARCHAR(255) NOT NULL,
 image_data BYTEA NOT NULL
 );

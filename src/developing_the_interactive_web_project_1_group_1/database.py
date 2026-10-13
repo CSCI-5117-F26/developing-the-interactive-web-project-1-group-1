@@ -9,3 +9,5 @@ def setup():
     global pool
     pool = ConnectionPool(os.environ["DATABASE_URL"], open=True, kwargs={"row_factory": dict_row})
     atexit.register(pool.close)
+
+#worry about context managers later, when we actually need to work with data... but use %s
