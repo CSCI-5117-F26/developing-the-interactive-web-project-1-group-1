@@ -28,7 +28,7 @@ Comment Text
 Created Date and Time
 
 */
-CRETE TABLE User(
+CRETE TABLE user(
     user_id SERIAL PRIMARY,
     auth_id VARCHAR(255) UNIQUE NOT NULL,
     display_name VARCHAR(255) NOT NULL, /* For auto generate hidden name we mentioned,at server side*/
@@ -55,8 +55,8 @@ CREATE TABLE tag_itemtype(
     item_name VARCHAR(100) NOT NULL UNIQUE
 )
 
-CREATE TABLE Post (
-    Post_id SERIAL PRIMARY KEY,
+CREATE TABLE post (
+    post_id SERIAL PRIMARY KEY,
     /*Undecided about if posts will be a weak relationship to Users ON DELETE CASCADE*/
     user_id SERIAL NOT NULL REFERENCES users(user_id),
     photo_id SERIAL NOT NULL REFERENCES images(photo_id),
@@ -67,4 +67,13 @@ CREATE TABLE Post (
     description TEXT
     timestamp TIMESTAMP DEFAULT NOW()
 
+)
+/*Make comments a weak relationship to post, since will delete if posts is delete*/
+CREATE TABLE comments(
+    comment_id SERIAL PRIMARY KEY
+    post_id SERIAL NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    /*With userid can get display name from it, and ties ownership to them*/
+    user_id SERIAL NOT NULL REFERENCES users(user_id),
+    comment_info TEXT NOT NULL
+    timestamp TIMESTAMP DEFAULT NOW()
 )
