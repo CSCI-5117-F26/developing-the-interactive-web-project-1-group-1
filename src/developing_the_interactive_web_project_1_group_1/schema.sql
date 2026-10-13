@@ -1,34 +1,4 @@
-/*
-References for Database schema       
-
-                                                                                                                                   POSTS
-CREATE TABLE POST
-Post ID (uuid) or SEIAL
-user_id
-Photo_id
-title
-Description
-Lost and found location
-Tag (drop down location)
-Posted date/time (Time stamp)
-
-CREATE TABLE User
-User ID (uuid)
-auth_id
-
-CREATE TABLE image_store
-photo_id
-image_name
-image_data
-
-CREATE TABLE Comment
-
-User ID
-Comment Text
-Created Date and Time
-
-*/
-CRETE TABLE user(
+CREATE TABLE user(
     user_id SERIAL PRIMARY,
     auth_id VARCHAR(255) UNIQUE NOT NULL,
     display_name VARCHAR(255) NOT NULL, /* For auto generate hidden name we mentioned,at server side*/
