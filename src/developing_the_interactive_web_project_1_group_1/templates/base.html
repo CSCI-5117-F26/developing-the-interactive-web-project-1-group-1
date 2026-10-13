@@ -28,11 +28,19 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
           <button class="btn-accent">+ I found something</button>
         </form>
 
-        <select name="account" id="account" class="account-select">
-          <option value="">Account</option>
-          <option value="settings">Settings</option>
-          <option value="profile">Profile</option>
-        </select>
+        {% if session.user %}
+          <span>{{ session.user.userinfo.name }}</span>
+          <a href="{{ url_for('logout') }}">Log out</a>
+          <select name="account" id="account" class="account-select">
+            <option value="">Account</option>
+            <option value="settings">Settings</option>
+            <option value="profile">Profile</option>
+          </select>
+        {% else %}
+          <form action="{{ url_for('login') }}" method="get">
+            <button>Log in</button>
+          </form>
+        {% endif %}
       </div>
     </header>
 

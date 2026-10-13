@@ -16,6 +16,9 @@ dependencies = [
     "pillow>=12.3.0",
     "psycopg[binary,pool]>=3.3.6",
     "torch>=2.14.1",
+    "authlib>=1.8.0",
+    "python-dotenv>=1.2.4",
+    "requests>=2.34.2",
 ]
 
 [project.scripts]
