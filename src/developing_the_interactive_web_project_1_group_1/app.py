@@ -1,4 +1,5 @@
 import os
+import random
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
@@ -44,6 +45,10 @@ def login():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session['user'] = token
+    display_name = f"user{random.randint(1000, 9999)}"
+    user = database.get_or_create_user(token['userinfo']['sub'], display_name)
+    session['user_id'] = user['user_id']
+    session['display_name'] = user['display_name']
     return redirect(url_for('index'))
 
 @app.route('/logout')

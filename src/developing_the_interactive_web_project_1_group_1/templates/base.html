@@ -29,7 +29,7 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
         </form>
 
         {% if session.user %}
-          <span>{{ session.user.userinfo.name }}</span>
+          <span>{{ session.display_name }}</span>
           <a href="{{ url_for('logout') }}">Log out</a>
           <select name="account" id="account" class="account-select">
             <option value="">Account</option>
