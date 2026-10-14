@@ -11,3 +11,5 @@ def setup():
     atexit.register(pool.close)
 
 #worry about context managers later, when we actually need to work with data... but use %s
+#well later is now, lucky me :)
+
