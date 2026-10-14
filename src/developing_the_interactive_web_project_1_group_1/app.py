@@ -14,6 +14,12 @@ app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
 
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
+# CSRF demo: posts no longer require an uploaded photo. Any post made without
+# one gets this placeholder image (a Lorem Picsum photo), so the DB's NOT NULL
+# photo still works.
+with open(os.path.join(os.path.dirname(__file__), 'static', 'placeholder.jpg'), 'rb') as _f:
+    PLACEHOLDER_IMAGE = _f.read()
 database.setup()
 
 oauth = OAuth(app)
@@ -114,18 +120,19 @@ def create_post():
         error = "Please choose a building."
     elif item_id not in [t['item_id'] for t in item_types]:
         error = "Please choose an item type."
-    elif photo is None or photo.filename == '':
-        error = "Please add a photo."
-    elif not photo.mimetype.startswith('image/'):
-        error = "The photo must be an image file."
 
     if error:
         return render_template('create_post.html', buildings=buildings, item_types=item_types,
                                error=error, form=request.form), 400
 
+    # Photo is now optional; use the placeholder when none was uploaded.
+    if photo is not None and photo.filename and photo.mimetype.startswith('image/'):
+        image_name, image_data = photo.filename, photo.read()
+    else:
+        image_name, image_data = 'placeholder.jpg', PLACEHOLDER_IMAGE
 
     database.create_post(session['user_id'], title, description, location_id, item_id,
-                         photo.filename, photo.read())
+                         image_name, image_data)
     return redirect(url_for('my_posts'))
 
 @app.route('/my-posts')
