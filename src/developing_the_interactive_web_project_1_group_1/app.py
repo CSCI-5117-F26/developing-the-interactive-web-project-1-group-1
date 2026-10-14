@@ -3,7 +3,7 @@ from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for
-import database
+from developing_the_interactive_web_project_1_group_1 import database
 
 load_dotenv()
 
@@ -58,6 +58,19 @@ def logout():
 @app.route('/create-post', methods=['GET', 'POST'])
 @login_required
 def create_post():
+    if request.method == 'POST':
+        # debug - print all the things to server console
+        #print(request.form.to_dict())
+        #print(request.files['photo'])
+
+	# the following should add image data to the database. WARNING: This is
+	# bad code. We're not validating untrusted user input (the filename). We
+	# also may want to have some kind of SQL transaction that does all
+	# the operations atomically so that if any step of the create post
+	# fails in the db, then we revert all changes.
+        image_data = request.files['photo'].read()
+        database.insert_image(request.files['photo'].filename, image_data)
+
     return render_template('create_post.html')
 
 @app.route('/my-posts')
