@@ -26,7 +26,7 @@ CREATE TABLE tag_itemtype(
 );
 /*So from what im seeing i need all references of id, 
 to be int, since SERIAL call auto increment creation of int*/
-CREATE TABLE post (
+CREATE TABLE posts (
     post_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(user_id),
     photo_id INT NOT NULL REFERENCES images(photo_id),
