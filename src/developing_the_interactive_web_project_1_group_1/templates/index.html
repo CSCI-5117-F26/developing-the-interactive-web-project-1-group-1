@@ -1,53 +1,50 @@
 {% extends "base.html" %}
-{% block title %}Root title goes here{% endblock %}
+{% block title %}Lost and Found{% endblock %}
 {% block main %}
 <h1>Recently found on campus</h1>
 <p>Search by keyword, or filter by building and item type</p>
-<form action="#" method="get" role="search">
-<input type="search" id="q" name="q" value="" placeholder="Search items... e.g. 'blue water bottle'">
+<form action="{{ url_for('index') }}" method="get" role="search" class="search-form">
+<input type="search" id="q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
   <option value="">Building: Any</option>
-  <option value="Keller">Keller Hall</option>
-  <option value="Bruininks">Bruininks Hall</option>
+  {% for b in buildings %}
+  <option value="{{ b.location_id }}"
+    {% if request.args.get('building') == b.location_id|string %}selected{% endif %}>{{ b.building_name }}</option>
+  {% endfor %}
 </select>
 <select id="item_type" name="item_type">
   <option value="">Item Type: Any</option>
-  <option value="clothing">Clothing</option>
-  <option value="keys">Keys</option>
+  {% for t in item_types %}
+  <option value="{{ t.item_id }}"
+    {% if request.args.get('item_type') == t.item_id|string %}selected{% endif %}>{{ t.item_name }}</option>
+  {% endfor %}
 </select>
+<button type="submit">Search</button>
 </form>
 
-<h2>Example Dummy Items</h2>
-{# This following dummy data should be replaced with actual items from the
-database once we have that implemented #}
-{% set items = [{ "image_url": "https://picsum.photos/400/300", 
-		  "title": "Some Item", 
-                  "location": "Keller", 
-                  "tags": ["stuff", "things"]},
-
-                { "image_url": "https://picsum.photos/400/300", 
-		  "title": "Another Item", 
-                  "location": "Bruininks", 
-                  "tags": ["clothing", "stuff"]},
-    
-                { "image_url": "https://picsum.photos/400/300", 
-		  "title": "Oytem", 
-                  "location": "Wilson Library", 
-                  "tags": ["books", "things", "stuff"]}]%} 
-
-{% for item in items %}
+<div class="item-grid">
+{% for post in posts %}
 <div class="item-card">
-  <img src="{{ item.image_url }}" alt="photo of item" />
-  <h3 class="item-title">{{ item.title }}</h3>
+  <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
+  <h3 class="item-title">{{ post.title }}</h3>
   <ul class="tags">
-    <li class="location">{{ item.location }}</li>
-    {% for tag in item.tags %}
-    <li>{{ tag }}</li>
-    {% endfor %}
+    <li class="location">{{ post.building_name }}</li>
+    <li>{{ post.item_name }}</li>
   </ul>
-  <p>Posted X hours ago</p>
+  <p>Posted by {{ post.display_name }}, {{ post.created_at|time_ago }}</p>
 </div>
+{% else %}
+<p>No items found.</p>
 {% endfor %}
+</div>
 
-<button>Load More</button>
+{% if has_more %}
+<form action="{{ url_for('index') }}" method="get">
+  <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+  <input type="hidden" name="building" value="{{ request.args.get('building', '') }}">
+  <input type="hidden" name="item_type" value="{{ request.args.get('item_type', '') }}">
+  <input type="hidden" name="limit" value="{{ limit + 20 }}">
+  <button type="submit">Load More</button>
+</form>
+{% endif %}
 {% endblock %}
