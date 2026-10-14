@@ -62,14 +62,7 @@ def create_post():
         # debug - print all the things to server console
         #print(request.form.to_dict())
         #print(request.files['photo'])
-
-	# the following should add image data to the database. WARNING: This is
-	# bad code. We're not validating untrusted user input (the filename). We
-	# also may want to have some kind of SQL transaction that does all
-	# the operations atomically so that if any step of the create post
-	# fails in the db, then we revert all changes.
-        image_data = request.files['photo'].read()
-        database.insert_image(request.files['photo'].filename, image_data)
+        database.insert_post(request)
 
     return render_template('create_post.html')
 
