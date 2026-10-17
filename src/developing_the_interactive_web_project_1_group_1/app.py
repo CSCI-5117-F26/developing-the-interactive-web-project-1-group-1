@@ -3,7 +3,7 @@ import random
 import mimetypes
 from datetime import datetime, timezone
 from functools import wraps
-from authlib.integrations.flask_client import OAuth
+from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response
 from developing_the_interactive_web_project_1_group_1 import database
@@ -96,7 +96,12 @@ def login():
 
 @app.route('/callback')
 def callback():
-    token = oauth.auth0.authorize_access_token()
+    # Handle Auth0 if login decliens and return to home
+    try:
+        token = oauth.auth0.authorize_access_token()
+    except OAuthError:
+        return redirect(url_for('index'))
+
     display_name = f"user{random.randint(1000, 9999)}"
     user = database.get_or_create_user(token['userinfo']['sub'], display_name)
 
