@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}My posts{% endblock %}
+{% block main %}
+<h1>My posts</h1>
+
+<table class="posts-table">
+  <thead>
+    <tr>
+      <th>Photo</th>
+      <th>Title</th>
+      <th>Building</th>
+      <th>Comments</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for post in posts %}
+    <tr>
+      <td><img src="https://picsum.photos/400/300" alt="photo of {{ post.title }}" class="post-thumb"></td>
+      <td>{{ post.title }}</td>
+      <td>{{ post.building }}</td>
+      <td>{{ post.comments }}</td>
+      <td>
+        <div class="post-actions">
+          <button type="button">Edit</button>
+          <button type="button">Delete</button>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

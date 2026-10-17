@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Root title goes here{% endblock %}
+{% block main %}
+<h1>Recently found on campus</h1>
+<p>Search by keyword, or filter by building and item type</p>
+<form action="#" method="get" role="search">
+<input type="search" id="q" name="q" value="" placeholder="Search items... e.g. 'blue water bottle'">
+<select id="building" name="building">
+  <option value="">Building: Any</option>
+  <option value="Keller">Keller Hall</option>
+  <option value="Bruininks">Bruininks Hall</option>
+</select>
+<select id="item_type" name="item_type">
+  <option value="">Item Type: Any</option>
+  <option value="clothing">Clothing</option>
+  <option value="keys">Keys</option>
+</select>
+</form>
+
+<h2>Example Dummy Items</h2>
+{# This following dummy data should be replaced with actual items from the
+database once we have that implemented #}
+{% set items = [{ "image_url": "https://picsum.photos/400/300", 
+		  "title": "Some Item", 
+                  "location": "Keller", 
+                  "tags": ["stuff", "things"]},
+
+                { "image_url": "https://picsum.photos/400/300", 
+		  "title": "Another Item", 
+                  "location": "Bruininks", 
+                  "tags": ["clothing", "stuff"]},
+    
+                { "image_url": "https://picsum.photos/400/300", 
+		  "title": "Oytem", 
+                  "location": "Wilson Library", 
+                  "tags": ["books", "things", "stuff"]}]%} 
+
+{% for item in items %}
+<div class="item-card">
+  <img src="{{ item.image_url }}" alt="photo of item" />
+  <h3 class="item-title">{{ item.title }}</h3>
+  <ul class="tags">
+    <li class="location">{{ item.location }}</li>
+    {% for tag in item.tags %}
+    <li>{{ tag }}</li>
+    {% endfor %}
+  </ul>
+  <p>Posted X hours ago</p>
+</div>
+{% endfor %}
+
+<button>Load More</button>
+{% endblock %}
