@@ -100,3 +100,54 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20):
                 params + [limit],
             )
             return cur.fetchall()
+
+def get_post(post_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM posts WHERE post_id = %s", (post_id,))
+            return cur.fetchone()
+
+def get_posts_for_user(user_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """SELECT posts.post_id, posts.photo_id, posts.title, tag_building.building_name,
+                          COUNT(comments.comment_id) AS comment_count
+                   FROM posts
+                   JOIN tag_building ON posts.tag_location = tag_building.location_id
+                   LEFT JOIN comments ON comments.post_id = posts.post_id
+                   WHERE posts.user_id = %s
+                   GROUP BY posts.post_id, tag_building.building_name
+                   ORDER BY posts.created_at DESC""",
+                (user_id,),
+            )
+            return cur.fetchall()
+
+def update_post(post_id, user_id, title, description, location_id, item_id, image_name=None, image_data=None):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """UPDATE posts SET title = %s, description = %s, tag_location = %s, tag_item = %s
+                   WHERE post_id = %s AND user_id = %s
+                   RETURNING photo_id""",
+                (title, description, location_id, item_id, post_id, user_id),
+            )
+            row = cur.fetchone()
+            if row is not None and image_data is not None:
+                cur.execute(
+                    "UPDATE images SET image_name = %s, image_data = %s WHERE photo_id = %s",
+                    (image_name, image_data, row['photo_id']),
+                )
+
+def delete_post(post_id, user_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM posts WHERE post_id = %s AND user_id = %s RETURNING photo_id",
+                        (post_id, user_id))
+            row = cur.fetchone()
+            if row is not None:
+                cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))

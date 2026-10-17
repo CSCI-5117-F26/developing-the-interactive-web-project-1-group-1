@@ -36,6 +36,28 @@ def login_required(f):
     return decorated
 
 
+def get_own_post(post_id):
+    post = database.get_post(post_id)
+    if post is None:
+        abort(404)
+    if post['user_id'] != session['user_id']:
+        abort(403)
+    return post
+
+def post_form_error(title, location_id, item_id, photo, buildings, item_types, photo_required):
+    # checks the create/edit form. Returns an error message, or None if it's all good
+    has_photo = photo is not None and photo.filename != ''
+    if not title:
+        return "Please enter a title."
+    if location_id not in [b['location_id'] for b in buildings]:
+        return "Please choose a building."
+    if item_id not in [t['item_id'] for t in item_types]:
+        return "Please choose an item type."
+    if photo_required and not has_photo:
+        return "Please add a photo."
+    if has_photo and not photo.mimetype.startswith('image/'):
+        return "The photo must be an image file."
+    return None
 
 @app.template_filter('time_ago')
 def time_ago(when):
@@ -103,18 +125,7 @@ def create_post():
     item_id = request.form.get('item_type', type=int)
     photo = request.files.get('photo')
 
-    error = None
-    if not title:
-        error = "Please enter a title."
-    elif location_id not in [b['location_id'] for b in buildings]:
-        error = "Please choose a building."
-    elif item_id not in [t['item_id'] for t in item_types]:
-        error = "Please choose an item type."
-    elif photo is None or photo.filename == '':
-        error = "Please add a photo."
-    elif not photo.mimetype.startswith('image/'):
-        error = "The photo must be an image file."
-
+    error = post_form_error(title, location_id, item_id, photo, buildings, item_types, photo_required=True)
     if error:
         return render_template('create_post.html', buildings=buildings, item_types=item_types,
                                error=error, form=request.form), 400
@@ -126,13 +137,50 @@ def create_post():
 @app.route('/my-posts')
 @login_required
 def my_posts():
-    # demo data until we have a database
-    posts = [
-        {'title': 'Black AirPods', 'building': 'Keller Hall', 'comments': 2},
-        {'title': 'Blue Owala', 'building': 'Rec Center', 'comments': 0},
-        {'title': 'Umbrella', 'building': 'Anderson Hall', 'comments': 1},
-    ]
+    posts = database.get_posts_for_user(session['user_id'])
     return render_template('my_posts.html', posts=posts)
+
+@app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_post(post_id):
+    post = get_own_post(post_id)
+    buildings = database.get_buildings()
+    item_types = database.get_item_types()
+
+    if request.method == 'GET':
+        # fill the form with what's saved now
+        form = {'title': post['title'], 'details': post['description'] or '',
+                'building': str(post['tag_location']), 'item_type': str(post['tag_item'])}
+        error = None
+        if request.args.get('too_big'):
+            error = "File is too large. Upload size limit is 10MB"
+        return render_template('create_post.html', post=post, buildings=buildings,
+                               item_types=item_types, form=form, error=error)
+
+    title = request.form.get('title', '').strip()
+    description = request.form.get('details', '').strip()
+    location_id = request.form.get('building', type=int)
+    item_id = request.form.get('item_type', type=int)
+    photo = request.files.get('photo')
+
+    error = post_form_error(title, location_id, item_id, photo, buildings, item_types, photo_required=False)
+    if error:
+        return render_template('create_post.html', post=post, buildings=buildings, item_types=item_types,
+                               error=error, form=request.form), 400
+
+    if photo is not None and photo.filename != '':
+        database.update_post(post_id, session['user_id'], title, description, location_id, item_id,
+                             photo.filename, photo.read())
+    else:
+        database.update_post(post_id, session['user_id'], title, description, location_id, item_id)
+    return redirect(url_for('my_posts'))
+
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    get_own_post(post_id)
+    database.delete_post(post_id, session['user_id'])
+    return redirect(url_for('my_posts'))
 
 @app.route('/images/<int:photo_id>')
 def image(photo_id):
@@ -144,6 +192,9 @@ def image(photo_id):
 
 @app.errorhandler(413)
 def too_large(e):
+    # editing: send them back to their edit page, which shows the message
+    if request.endpoint == 'edit_post':
+        return redirect(url_for('edit_post', post_id=request.view_args['post_id'], too_big=1))
     return render_template('create_post.html', buildings=database.get_buildings(),
                            item_types=database.get_item_types(),
                            error="File is too large. Upload size limit is 10MB"), 413

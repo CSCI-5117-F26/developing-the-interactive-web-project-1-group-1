@@ -1,20 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Post an item{% endblock %}
+{# used for both creating a post and editing one. `post` is only passed in when editing #}
+{% block title %}{% if post %}Edit post{% else %}Post an item{% endif %}{% endblock %}
 {% block main %}
 <div class="post-page">
+  {% if post %}
+  <h1>Edit post</h1>
+  <p>Update the details of your post.</p>
+  {% else %}
   <h1>Post an item</h1>
   <p>Fill out our details of item found.</p>
+  {% endif %}
 
   {% if error %}
   <p class="form-error">{{ error }}</p>
   {% endif %}
 
+  {% if post %}
+  <form action="{{ url_for('edit_post', post_id=post.post_id) }}" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="photo">Photo</label>
+      <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="current photo of {{ post.title }}">
+      <input type="file" id="photo" name="photo" accept="image/*">
+      <p>Leave this empty to keep the current photo.</p>
+    </div>
+  {% else %}
   <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
     <div class="field">
       <label for="photo">Photo</label>
       <img src="https://picsum.photos/400/300" alt="">
       <input type="file" id="photo" name="photo" accept="image/*" required>
     </div>
+  {% endif %}
 
     <div class="field">
       <label for="title">Title</label>
@@ -54,8 +70,13 @@
       <p>The Lost &amp; Found for [selected building] is at [location].</p>
     </div>
 
+    {% if post %}
+    <button type="submit" class="btn-accent">Save changes</button>
+    <a href="{{ url_for('my_posts') }}">Cancel</a>
+    {% else %}
     <button type="submit" class="btn-accent">Post item</button>
     <a href="{{ url_for('index') }}">Cancel</a>
+    {% endif %}
   </form>
 </div>
 {% endblock %}
