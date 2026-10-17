@@ -224,6 +224,20 @@ main {
   object-fit: cover;
 }
 
+.item-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  list-style-type: none;
+  padding: 0;
+}
+
+.item-card .tags li > span {
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
 /* my posts page */
 .posts-table {
   width: 100%;
