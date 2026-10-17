@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from functools import wraps
 from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
-from flask import Flask, request, render_template, redirect, session, url_for, abort, Response
+from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 from developing_the_interactive_web_project_1_group_1 import database
 
 load_dotenv()
@@ -100,12 +100,26 @@ def callback():
     # Handle Auth0 if login decliens and return to home
     try:
         token = oauth.auth0.authorize_access_token()
-    except OAuthError:
+    except OAuthError as e:
         session.pop('next_url', None)
+        if e.error == 'access_denied':
+            flash("Login cancelled.")
+        else:
+            flash("Something went wrong while logging in.")
         return redirect(url_for('index'))
+    userinfo = token['userinfo']
+    email = userinfo.get('email', '').lower()
+    if not email.endswith('@umn.edu') or not userinfo.get('email_verified'):
+        if email.endswith('@umn.edu'):
+            message = "Please verify your UMN email, then log in again."
+        else:
+            message = "Please sign in with an @umn.edu email account."
+        session.clear()
+        flash(message)
+        return auth0_logout(url_for('index', _external=True))
 
     display_name = f"user{random.randint(1000, 9999)}"
-    user = database.get_or_create_user(token['userinfo']['sub'], display_name)
+    user = database.get_or_create_user(userinfo['sub'], display_name)
 
     session['user'] = token
     session['user_id'] = user['user_id']
@@ -114,14 +128,16 @@ def callback():
     next_url = session.pop('next_url', url_for('index'))
     return redirect(next_url)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return_to = url_for('index', _external=True)
+def auth0_logout(return_to):
     return redirect(
         f'https://{os.environ["AUTH0_DOMAIN"]}/v2/logout'
         f'?returnTo={return_to}&client_id={os.environ["AUTH0_CLIENT_ID"]}'
     )
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return auth0_logout(url_for('index', _external=True))
 
 @app.route('/create-post', methods=['GET', 'POST'])
 @login_required
