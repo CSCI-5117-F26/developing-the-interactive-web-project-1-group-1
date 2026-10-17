@@ -28,8 +28,6 @@ def get_item_types():
             return cur.fetchall()
 
 def create_post(user_id, title, description, location_id, item_id, image_name, image_data):
-    # validation happens in app.py before this is called. The form sends the
-    # building and item type ids, so no lookups by name are needed here.
     pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:

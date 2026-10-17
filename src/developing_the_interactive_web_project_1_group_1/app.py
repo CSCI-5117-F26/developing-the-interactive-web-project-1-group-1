@@ -3,9 +3,9 @@ import random
 import mimetypes
 from datetime import datetime, timezone
 from functools import wraps
-from authlib.integrations.flask_client import OAuth
+from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
-from flask import Flask, request, render_template, redirect, session, url_for, abort, Response
+from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 from developing_the_interactive_web_project_1_group_1 import database
 
 load_dotenv()
@@ -30,10 +30,10 @@ oauth.register(
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if 'user_id' not in session:
-            return redirect(url_for('login'))
-        if database.get_user(session['user_id']) is None:
+        if 'user_id' not in session or database.get_user(session['user_id']) is None:
             session.clear()
+            if request.method == 'GET':
+                session['next_url'] = request.path
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated
@@ -48,7 +48,6 @@ def get_own_post(post_id):
     return post
 
 def post_form_error(title, location_id, item_id, photo, buildings, item_types, photo_required):
-    # checks the create/edit form. Returns an error message, or None if it's all good
     has_photo = photo is not None and photo.filename != ''
     if not title:
         return "Please enter a title."
@@ -96,23 +95,50 @@ def login():
 
 @app.route('/callback')
 def callback():
-    token = oauth.auth0.authorize_access_token()
+    # Handle Auth0 if login declines and return to home
+    try:
+        token = oauth.auth0.authorize_access_token()
+    except OAuthError as e:
+        session.pop('next_url', None)
+        if e.error == 'access_denied':
+            flash("Login cancelled.")
+        else:
+            flash("Something went wrong while logging in.")
+        return redirect(url_for('index'))
+    userinfo = token['userinfo']
+    email = userinfo.get('email', '').lower()
+    if not email.endswith('@umn.edu') or not userinfo.get('email_verified'):
+        if email.endswith('@umn.edu'):
+            message = "Please verify your UMN email, then log in again."
+        elif userinfo['sub'].startswith('google-oauth2|'):
+            # Auth0 ids start with how they logged in
+            message = "Please sign in with your UMN Google account."
+        else:
+            message = "Please sign in with an @umn.edu email account."
+        session.clear()
+        flash(message)
+        return auth0_logout(url_for('index', _external=True))
+
     display_name = f"user{random.randint(1000, 9999)}"
-    user = database.get_or_create_user(token['userinfo']['sub'], display_name)
+    user = database.get_or_create_user(userinfo['sub'], display_name)
 
     session['user'] = token
     session['user_id'] = user['user_id']
     session['display_name'] = user['display_name']
-    return redirect(url_for('index'))
+    # Return to page user attempted to log in from
+    next_url = session.pop('next_url', url_for('index'))
+    return redirect(next_url)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return_to = url_for('index', _external=True)
+def auth0_logout(return_to):
     return redirect(
         f'https://{os.environ["AUTH0_DOMAIN"]}/v2/logout'
         f'?returnTo={return_to}&client_id={os.environ["AUTH0_CLIENT_ID"]}'
     )
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return auth0_logout(url_for('index', _external=True))
 
 @app.route('/create-post', methods=['GET', 'POST'])
 @login_required
@@ -152,7 +178,6 @@ def edit_post(post_id):
     item_types = database.get_item_types()
 
     if request.method == 'GET':
-        # fill the form with what's saved now
         form = {'title': post['title'], 'details': post['description'] or '',
                 'building': str(post['tag_location']), 'item_type': str(post['tag_item'])}
         error = None
@@ -196,7 +221,6 @@ def image(photo_id):
 
 @app.errorhandler(413)
 def too_large(e):
-    # editing: send them back to their edit page, which shows the message
     if request.endpoint == 'edit_post':
         return redirect(url_for('edit_post', post_id=request.view_args['post_id'], too_big=1))
     return render_template('create_post.html', buildings=database.get_buildings(),
