@@ -32,7 +32,6 @@ def login_required(f):
     def decorated(*args, **kwargs):
         if 'user_id' not in session or database.get_user(session['user_id']) is None:
             session.clear()
-            # remember the page they wanted so /callback can send them back to it
             if request.method == 'GET':
                 session['next_url'] = request.path
             return redirect(url_for('login'))
@@ -49,7 +48,6 @@ def get_own_post(post_id):
     return post
 
 def post_form_error(title, location_id, item_id, photo, buildings, item_types, photo_required):
-    # checks the create/edit form. Returns an error message, or None if it's all good
     has_photo = photo is not None and photo.filename != ''
     if not title:
         return "Please enter a title."
@@ -97,7 +95,7 @@ def login():
 
 @app.route('/callback')
 def callback():
-    # Handle Auth0 if login decliens and return to home
+    # Handle Auth0 if login declines and return to home
     try:
         token = oauth.auth0.authorize_access_token()
     except OAuthError as e:
@@ -113,7 +111,7 @@ def callback():
         if email.endswith('@umn.edu'):
             message = "Please verify your UMN email, then log in again."
         elif userinfo['sub'].startswith('google-oauth2|'):
-            # Auth0 ids start with how they logged in: google-oauth2|... or auth0|... (email + password)
+            # Auth0 ids start with how they logged in
             message = "Please sign in with your UMN Google account."
         else:
             message = "Please sign in with an @umn.edu email account."
@@ -180,7 +178,6 @@ def edit_post(post_id):
     item_types = database.get_item_types()
 
     if request.method == 'GET':
-        # fill the form with what's saved now
         form = {'title': post['title'], 'details': post['description'] or '',
                 'building': str(post['tag_location']), 'item_type': str(post['tag_item'])}
         error = None
@@ -224,7 +221,6 @@ def image(photo_id):
 
 @app.errorhandler(413)
 def too_large(e):
-    # editing: send them back to their edit page, which shows the message
     if request.endpoint == 'edit_post':
         return redirect(url_for('edit_post', post_id=request.view_args['post_id'], too_big=1))
     return render_template('create_post.html', buildings=database.get_buildings(),
