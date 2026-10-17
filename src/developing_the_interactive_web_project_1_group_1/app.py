@@ -30,10 +30,11 @@ oauth.register(
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if 'user_id' not in session:
-            return redirect(url_for('login'))
-        if database.get_user(session['user_id']) is None:
+        if 'user_id' not in session or database.get_user(session['user_id']) is None:
             session.clear()
+            # remember the page they wanted so /callback can send them back to it
+            if request.method == 'GET':
+                session['next_url'] = request.path
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated
@@ -100,6 +101,7 @@ def callback():
     try:
         token = oauth.auth0.authorize_access_token()
     except OAuthError:
+        session.pop('next_url', None)
         return redirect(url_for('index'))
 
     display_name = f"user{random.randint(1000, 9999)}"
@@ -108,7 +110,9 @@ def callback():
     session['user'] = token
     session['user_id'] = user['user_id']
     session['display_name'] = user['display_name']
-    return redirect(url_for('index'))
+    # Return to page user attempted to log in from
+    next_url = session.pop('next_url', url_for('index'))
+    return redirect(next_url)
 
 @app.route('/logout')
 def logout():
