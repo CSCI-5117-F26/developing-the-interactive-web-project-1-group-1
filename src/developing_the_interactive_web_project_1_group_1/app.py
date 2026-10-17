@@ -1,6 +1,7 @@
 import os
 import random
 import mimetypes
+from datetime import datetime, timezone
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
@@ -36,9 +37,31 @@ def login_required(f):
 
 
 
+@app.template_filter('time_ago')
+def time_ago(when):
+    seconds = (datetime.now(timezone.utc) - when).total_seconds()
+    if seconds < 60:
+        return "just now"
+    if seconds < 3600:
+        return f"{int(seconds // 60)} min ago"
+    if seconds < 86400:
+        return f"{int(seconds // 3600)} hr ago"
+    return f"{int(seconds // 86400)} days ago"
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    search = request.args.get('q', '').strip()
+    location_id = request.args.get('building', type=int)
+    item_id = request.args.get('item_type', type=int)
+    limit = request.args.get('limit', 20, type=int)
+    limit = max(1, min(limit, 200))
+
+    # Get one extra post to know if there are more to load
+    posts = database.get_posts(search, location_id, item_id, limit + 1)
+    has_more = len(posts) > limit
+
+    return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
+                           buildings=database.get_buildings(), item_types=database.get_item_types())
 
 @app.route('/login')
 def login():

@@ -69,3 +69,34 @@ def get_image(photo_id):
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM images WHERE photo_id = %s", (photo_id,))
             return cur.fetchone()
+
+def get_posts(search=None, location_id=None, item_id=None, limit=20):
+    conditions = []
+    params = []
+    if search:
+        conditions.append("(posts.title ILIKE %s OR posts.description ILIKE %s)")
+        params += [f"%{search}%", f"%{search}%"]
+    if location_id:
+        conditions.append("posts.tag_location = %s")
+        params.append(location_id)
+    if item_id:
+        conditions.append("posts.tag_item = %s")
+        params.append(item_id)
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                           tag_building.building_name, tag_itemtype.item_name, users.display_name
+                    FROM posts
+                    JOIN tag_building ON posts.tag_location = tag_building.location_id
+                    JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                    JOIN users ON posts.user_id = users.user_id
+                    {where}
+                    ORDER BY posts.created_at DESC
+                    LIMIT %s""",
+                params + [limit],
+            )
+            return cur.fetchall()
