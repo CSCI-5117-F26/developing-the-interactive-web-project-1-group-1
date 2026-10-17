@@ -112,6 +112,9 @@ def callback():
     if not email.endswith('@umn.edu') or not userinfo.get('email_verified'):
         if email.endswith('@umn.edu'):
             message = "Please verify your UMN email, then log in again."
+        elif userinfo['sub'].startswith('google-oauth2|'):
+            # Auth0 ids start with how they logged in: google-oauth2|... or auth0|... (email + password)
+            message = "Please sign in with your UMN Google account."
         else:
             message = "Please sign in with an @umn.edu email account."
         session.clear()
