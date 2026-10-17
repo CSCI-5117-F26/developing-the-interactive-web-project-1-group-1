@@ -26,6 +26,7 @@ def insert_post(request):
     user_id = 6767
         
     global pool
+    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             # first get the image into the db successfully 
@@ -47,3 +48,16 @@ def insert_post(request):
             # here goes nothing...also, this long line below should be cleaned up to
             # be pythonic
             cur.execute("INSERT INTO posts (user_id, photo_id, title, tag_location, tag_item, description) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, photo_id, title, tag_location, tag_item, description))
+
+def get_or_create_user(auth_id, display_name):
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM users WHERE auth_id = %s", (auth_id,))
+            user = cur.fetchone()
+            if user is None:
+                cur.execute(
+                    "INSERT INTO users (auth_id, display_name) VALUES (%s, %s) RETURNING *",
+                    (auth_id, display_name),
+                )
+                user = cur.fetchone()
+            return user

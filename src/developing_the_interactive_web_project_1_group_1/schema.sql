@@ -41,7 +41,7 @@ CREATE TABLE posts (
 /*Make comments a weak relationship to post, since will delete if posts is delete*/
 CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY,
-    post_id INT NOT NULL REFERENCES post(post_id) ON DELETE CASCADE,
+    post_id INT NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
     /*With userid can get display name from it, and ties ownership to them*/
     user_id INT NOT NULL REFERENCES users(user_id),
     comment_info TEXT NOT NULL,
