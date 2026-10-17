@@ -179,6 +179,11 @@ main {
   margin-bottom: 0.5rem;
 }
 
+.form-error {
+  color: #b00020;
+  font-weight: 600;
+}
+
 /* my posts page */
 .posts-table {
   width: 100%;

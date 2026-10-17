@@ -63,13 +63,37 @@ def logout():
 @app.route('/create-post', methods=['GET', 'POST'])
 @login_required
 def create_post():
-    if request.method == 'POST':
-        # debug - print all the things to server console
-        #print(request.form.to_dict())
-        #print(request.files['photo'])
-        database.insert_post(request)
+    buildings = database.get_buildings()
+    item_types = database.get_item_types()
 
-    return render_template('create_post.html')
+    if request.method == 'GET':
+        return render_template('create_post.html', buildings=buildings, item_types=item_types)
+
+    title = request.form.get('title', '').strip()
+    description = request.form.get('details', '').strip()
+    location_id = request.form.get('building', type=int)
+    item_id = request.form.get('item_type', type=int)
+    photo = request.files.get('photo')
+
+    error = None
+    if not title:
+        error = "Please enter a title."
+    elif location_id not in [b['location_id'] for b in buildings]:
+        error = "Please choose a building."
+    elif item_id not in [t['item_id'] for t in item_types]:
+        error = "Please choose an item type."
+    elif photo is None or photo.filename == '':
+        error = "Please add a photo."
+    elif not photo.mimetype.startswith('image/'):
+        error = "The photo must be an image file."
+
+    if error:
+        return render_template('create_post.html', buildings=buildings, item_types=item_types,
+                               error=error, form=request.form), 400
+
+    database.create_post(session['user_id'], title, description, location_id, item_id,
+                         photo.filename, photo.read())
+    return redirect(url_for('my_posts'))
 
 @app.route('/my-posts')
 @login_required
