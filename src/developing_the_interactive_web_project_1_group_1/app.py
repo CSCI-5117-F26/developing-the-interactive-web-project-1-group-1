@@ -4,7 +4,7 @@ from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for
-import database
+from developing_the_interactive_web_project_1_group_1 import database
 
 load_dotenv()
 
@@ -63,6 +63,12 @@ def logout():
 @app.route('/create-post', methods=['GET', 'POST'])
 @login_required
 def create_post():
+    if request.method == 'POST':
+        # debug - print all the things to server console
+        #print(request.form.to_dict())
+        #print(request.files['photo'])
+        database.insert_post(request)
+
     return render_template('create_post.html')
 
 @app.route('/my-posts')
