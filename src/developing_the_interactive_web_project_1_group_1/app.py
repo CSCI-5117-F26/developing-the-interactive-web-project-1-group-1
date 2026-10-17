@@ -30,7 +30,10 @@ oauth.register(
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if 'user' not in session:
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        if database.get_user(session['user_id']) is None:
+            session.clear()
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated
@@ -94,9 +97,10 @@ def login():
 @app.route('/callback')
 def callback():
     token = oauth.auth0.authorize_access_token()
-    session['user'] = token
     display_name = f"user{random.randint(1000, 9999)}"
     user = database.get_or_create_user(token['userinfo']['sub'], display_name)
+
+    session['user'] = token
     session['user_id'] = user['user_id']
     session['display_name'] = user['display_name']
     return redirect(url_for('index'))
