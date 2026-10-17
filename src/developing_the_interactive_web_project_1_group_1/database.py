@@ -13,42 +13,41 @@ def setup():
 
 #worry about context managers later, when we actually need to work with data... but use %s
 #well later is now, lucky me :)
-def insert_post(request):
-    # need validation for all of this user input. Also we may want consistent
-    # names in the html and db columns.
-    image_data = request.files['photo'].read()
-    filename = request.files['photo'].filename
-    description = request.form.get('details')
-    title = request.form.get('title')
-    building = request.form.get('building')
-    item_type = request.form.get('item_type')
-
-    # hardcoding user id for techshare
-    user_id = 6767
-        
-    global pool
+def get_buildings():
     pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
-            # first get the image into the db successfully 
-            cur.execute("INSERT INTO images (image_name, image_data) VALUES (%s, %s) RETURNING photo_id", (filename, image_data))
-            # the cursor will return a valid photo_id if successful 
+            cur.execute("SELECT * FROM tag_building ORDER BY building_name")
+            return cur.fetchall()
+
+def get_item_types():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM tag_itemtype ORDER BY item_name")
+            return cur.fetchall()
+
+def create_post(user_id, title, description, location_id, item_id, image_name, image_data):
+    # validation happens in app.py before this is called. The form sends the
+    # building and item type ids, so no lookups by name are needed here.
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            # first get the image into the db successfully
+            cur.execute(
+                "INSERT INTO images (image_name, image_data) VALUES (%s, %s) RETURNING photo_id",
+                (image_name, image_data),
+            )
+            # the cursor will return a valid photo_id if successful
             photo_id = cur.fetchone()['photo_id']
 
-            # get the ids associated with the chosen location and item types
-            # (we probably could make our design better to avoid these queries
-            # below). Also, trailing comma required for single params!
-            cur.execute("SELECT location_id FROM tag_building WHERE building_name = %s", (building,))
-            tag_location = cur.fetchone()['location_id']
-            cur.execute("SELECT item_id FROM tag_itemtype WHERE item_name = %s", (item_type,))
-            tag_item = cur.fetchone()['item_id']
-
             # insert the post!
-            # debug - print all values of the future posts table row 
-            print(f'user_id: {user_id}, photo_id: {photo_id}, title: {title}, tag_location: {tag_location}, tag_item: {tag_item}, description: {description}')
-            # here goes nothing...also, this long line below should be cleaned up to
-            # be pythonic
-            cur.execute("INSERT INTO posts (user_id, photo_id, title, tag_location, tag_item, description) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, photo_id, title, tag_location, tag_item, description))
+            cur.execute(
+                """INSERT INTO posts (user_id, photo_id, title, tag_location, tag_item, description)
+                   VALUES (%s, %s, %s, %s, %s, %s) RETURNING post_id""",
+                (user_id, photo_id, title, location_id, item_id, description),
+            )
+            return cur.fetchone()['post_id']
 
 def get_or_create_user(auth_id, display_name):
     pool.open()
@@ -63,3 +62,99 @@ def get_or_create_user(auth_id, display_name):
                 )
                 user = cur.fetchone()
             return user
+
+def get_user(user_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
+            return cur.fetchone()
+
+def get_image(photo_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM images WHERE photo_id = %s", (photo_id,))
+            return cur.fetchone()
+
+def get_posts(search=None, location_id=None, item_id=None, limit=20):
+    conditions = []
+    params = []
+    if search:
+        conditions.append("(posts.title ILIKE %s OR posts.description ILIKE %s)")
+        params += [f"%{search}%", f"%{search}%"]
+    if location_id:
+        conditions.append("posts.tag_location = %s")
+        params.append(location_id)
+    if item_id:
+        conditions.append("posts.tag_item = %s")
+        params.append(item_id)
+    where = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                           tag_building.building_name, tag_itemtype.item_name, users.display_name
+                    FROM posts
+                    JOIN tag_building ON posts.tag_location = tag_building.location_id
+                    JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                    JOIN users ON posts.user_id = users.user_id
+                    {where}
+                    ORDER BY posts.created_at DESC
+                    LIMIT %s""",
+                params + [limit],
+            )
+            return cur.fetchall()
+
+def get_post(post_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM posts WHERE post_id = %s", (post_id,))
+            return cur.fetchone()
+
+def get_posts_for_user(user_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """SELECT posts.post_id, posts.photo_id, posts.title, tag_building.building_name,
+                          COUNT(comments.comment_id) AS comment_count
+                   FROM posts
+                   JOIN tag_building ON posts.tag_location = tag_building.location_id
+                   LEFT JOIN comments ON comments.post_id = posts.post_id
+                   WHERE posts.user_id = %s
+                   GROUP BY posts.post_id, tag_building.building_name
+                   ORDER BY posts.created_at DESC""",
+                (user_id,),
+            )
+            return cur.fetchall()
+
+def update_post(post_id, user_id, title, description, location_id, item_id, image_name=None, image_data=None):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """UPDATE posts SET title = %s, description = %s, tag_location = %s, tag_item = %s
+                   WHERE post_id = %s AND user_id = %s
+                   RETURNING photo_id""",
+                (title, description, location_id, item_id, post_id, user_id),
+            )
+            row = cur.fetchone()
+            if row is not None and image_data is not None:
+                cur.execute(
+                    "UPDATE images SET image_name = %s, image_data = %s WHERE photo_id = %s",
+                    (image_name, image_data, row['photo_id']),
+                )
+
+def delete_post(post_id, user_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM posts WHERE post_id = %s AND user_id = %s RETURNING photo_id",
+                        (post_id, user_id))
+            row = cur.fetchone()
+            if row is not None:
+                cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
