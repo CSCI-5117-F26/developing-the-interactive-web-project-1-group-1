@@ -62,3 +62,10 @@ def get_or_create_user(auth_id, display_name):
                 )
                 user = cur.fetchone()
             return user
+
+def get_image(photo_id):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM images WHERE photo_id = %s", (photo_id,))
+            return cur.fetchone()

@@ -1,15 +1,20 @@
 import os
 import random
+import mimetypes
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
-from flask import Flask, request, render_template, redirect, session, url_for
+from flask import Flask, request, render_template, redirect, session, url_for, abort, Response
 from developing_the_interactive_web_project_1_group_1 import database
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
+
+# 10MB limit
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+
 database.setup()
 
 oauth = OAuth(app)
@@ -105,6 +110,20 @@ def my_posts():
         {'title': 'Umbrella', 'building': 'Anderson Hall', 'comments': 1},
     ]
     return render_template('my_posts.html', posts=posts)
+
+@app.route('/images/<int:photo_id>')
+def image(photo_id):
+    img = database.get_image(photo_id)
+    if img is None:
+        abort(404)
+    mimetype = mimetypes.guess_type(img['image_name'])[0] or 'application/octet-stream'
+    return Response(img['image_data'], mimetype=mimetype)
+
+@app.errorhandler(413)
+def too_large(e):
+    return render_template('create_post.html', buildings=database.get_buildings(),
+                           item_types=database.get_item_types(),
+                           error="File is too large. Upload size limit is 10MB"), 413
 
 if __name__ == '__main__':
     app.run() 
