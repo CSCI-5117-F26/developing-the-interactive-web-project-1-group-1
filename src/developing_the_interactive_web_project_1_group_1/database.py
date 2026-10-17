@@ -7,7 +7,8 @@ pool = None
 #copied exsample code from kluver
 def setup():
     global pool
-    pool = ConnectionPool(os.environ["DATABASE_URL"], open=True, kwargs={"row_factory": dict_row})
+    # open=false is the fix Kluver recommended for the DB issue
+    pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, kwargs={"row_factory": dict_row})
     atexit.register(pool.close)
 
 #worry about context managers later, when we actually need to work with data... but use %s
@@ -50,6 +51,7 @@ def insert_post(request):
             cur.execute("INSERT INTO posts (user_id, photo_id, title, tag_location, tag_item, description) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, photo_id, title, tag_location, tag_item, description))
 
 def get_or_create_user(auth_id, display_name):
+    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE auth_id = %s", (auth_id,))
