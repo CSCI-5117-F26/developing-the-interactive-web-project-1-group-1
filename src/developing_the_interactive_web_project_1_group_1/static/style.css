@@ -179,6 +179,51 @@ main {
   margin-bottom: 0.5rem;
 }
 
+.form-error {
+  color: #b00020;
+  font-weight: 600;
+}
+
+.flash {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--maroon);
+  font-size: 0.9rem;
+  transition: opacity 0.5s;
+}
+
+.flash a {
+  margin-left: 0.5rem;
+}
+
+.flash-hidden {
+  opacity: 0;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.item-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
 /* my posts page */
 .posts-table {
   width: 100%;
@@ -194,6 +239,11 @@ main {
 
 .post-thumb {
   width: 60px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 @media (max-width: 700px) {

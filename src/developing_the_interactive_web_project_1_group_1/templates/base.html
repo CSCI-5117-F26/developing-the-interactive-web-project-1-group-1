@@ -29,7 +29,7 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
         </form>
 
         {% if session.user %}
-          <span>{{ session.user.userinfo.name }}</span>
+          <span>{{ session.display_name }}</span>
           <a href="{{ url_for('logout') }}">Log out</a>
           <select name="account" id="account" class="account-select">
             <option value="">Account</option>
@@ -45,6 +45,13 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
     </header>
 
     <main>
+    {# small banners from flash() in app.py, like "Login cancelled." #}
+    {% for message in get_flashed_messages() %}
+      <p class="flash" role="status">
+        {{ message }}
+        {% if not session.user %}<a href="{{ url_for('login') }}">Try again</a>{% endif %}
+      </p>
+    {% endfor %}
     {% block main %}{% endblock %}
     </main>
 
@@ -52,6 +59,15 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
       Footer Block <br>
       Fleshing out footer
     </footer>
+    <script>
+      // fade out the flash banners after 5 seconds
+      setTimeout(function () {
+        document.querySelectorAll('.flash').forEach(function (banner) {
+          banner.classList.add('flash-hidden');
+          setTimeout(function () { banner.remove(); }, 500);
+        });
+      }, 8000);
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>
