@@ -19,6 +19,7 @@ dependencies = [
     "authlib>=1.8.0",
     "python-dotenv>=1.2.4",
     "requests>=2.34.2",
+    "pillow-heif>=1.8.1",
 ]
 
 [project.scripts]

@@ -2,15 +2,15 @@ import clip
 import numpy as np
 import torch
 from PIL import Image
+from pillow_heif import register_heif_opener
+register_heif_opener()
 
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu" 
 print("Using:", device)
 
 model_name = "ViT-B/32"
 model, preprocess = clip.load(model_name, device=device)
 model.eval()
-
 
 def embed_text(q):
     txt = clip.tokenize([q]).to(device)
@@ -20,11 +20,6 @@ def embed_text(q):
     txt_emd = txt_emd/txt_emd.norm(dim=-1, keepdim= True)
     return txt_emd.cpu().numpy()[0].astype(np.float32)
 
-# not sure its needed since we can just dot product with every single image in the db since it wont prb be too many imgs
-def sim_score(a,b):
-    pass
-
-#im envisioning that we run this on every img that is uploaded to lost and found and store in a sep column for each item 
 def embed_img(img):
     image = preprocess(Image.open(img).convert("RGB")).unsqueeze(0).to(device)
     with torch.inference_mode():

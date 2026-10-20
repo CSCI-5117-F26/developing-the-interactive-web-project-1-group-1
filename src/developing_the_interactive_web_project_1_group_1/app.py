@@ -1,6 +1,4 @@
 from flask import Flask, request, render_template, url_for, Response
-from clip_search import embed_text, embed_img
-import upload_item
 import numpy as np
 from io import BytesIO
 # import some db package and run setup
@@ -13,6 +11,8 @@ from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 from developing_the_interactive_web_project_1_group_1 import database
+from developing_the_interactive_web_project_1_group_1.clip_util import embed_img, embed_text
+
 
 load_dotenv()
 
@@ -78,7 +78,6 @@ def time_ago(when):
         return f"{int(seconds // 3600)} hr ago"
     return f"{int(seconds // 86400)} days ago"
 
-upload_item.setup()
 @app.route('/')
 def index():
     search = request.args.get('q', '').strip()
@@ -86,9 +85,21 @@ def index():
     item_id = request.args.get('item_type', type=int)
     limit = request.args.get('limit', 20, type=int)
     limit = max(1, min(limit, 200))
+    ranked_photo_ids = None
+    if search:
+        query_vec = embed_text(search)
+        imgs = database.get_all_image_embeddings()
+        print(imgs)
+        if imgs:
+            img_matrix = np.stack([np.frombuffer(img['embedding'], dtype=np.float32) for img in imgs])
+            scores = img_matrix @ query_vec
+            idxs = np.argsort(-scores)
+            ranked_photo_ids = [imgs[i]["photo_id"] for i in idxs]
+        else:
+            ranked_photo_ids = []
 
     # Get one extra post to know if there are more to load
-    posts = database.get_posts(search, location_id, item_id, limit + 1)
+    posts = database.get_posts(search, location_id, item_id, limit + 1, ranked_photo_ids= ranked_photo_ids)
     has_more = len(posts) > limit
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
@@ -166,9 +177,11 @@ def create_post():
     if error:
         return render_template('create_post.html', buildings=buildings, item_types=item_types,
                                error=error, form=request.form), 400
+    embeded_image = embed_img(photo)
+    photo.seek(0)
 
     database.create_post(session['user_id'], title, description, location_id, item_id,
-                         photo.filename, photo.read())
+                         photo.filename, photo.read(), embeded_image)
     return redirect(url_for('my_posts'))
 
 @app.route('/my-posts')
@@ -177,44 +190,7 @@ def my_posts():
     posts = database.get_posts_for_user(session['user_id'])
     return render_template('my_posts.html', posts=posts)
 
-@app.route('/test', methods=['GET', 'POST'])
-def test_upload():
-    if request.method == "GET":
-        return render_template("index.html")
-    photo = request.files.get("photo")
-    
-    img_bytes = photo.read()
-    emds = embed_img(BytesIO(img_bytes))
-    emds_bytes = emds.astype(np.float32).tobytes()
-    upload_item.insert(img_bytes,emds_bytes)
-    return render_template('index.html')
 
-@app.route('/get_img/<int:img_id>', methods=['GET', 'POST'])
-def get_img(img_id):
-    row = upload_item.get_one(img_id)
-    return Response(row["image_data"], mimetype="image/jpeg")
-
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get("q","").strip()
-    query_vec = embed_text(query)
-    # get query, emded text, get images and cal sim score, return higest sim score
-    # GET IMAGE VECTORS FROM DB
-    #imgs = filter from db
-    imgs = upload_item.get_all()
-    img_matrix = np.stack([np.frombuffer(img["embedding"], dtype=np.float32) for img in imgs])
-    scores = img_matrix @ query_vec
-    idxs = np.argsort(-scores)[:10]
-    results = [
-        {
-            "img_url": url_for("get_img", img_id = imgs[i]["id"]),
-            "title": "Test Title",
-            "location": "Keller",
-            "item_type": ["item Type 1", "item Type 2"],
-            "posted_ago": "3"
-        } for i in idxs
-    ]
-    return render_template("index.html", query = query , results = results)
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_post(post_id):

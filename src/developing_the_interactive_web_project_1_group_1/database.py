@@ -27,7 +27,7 @@ def get_item_types():
             cur.execute("SELECT * FROM tag_itemtype ORDER BY item_name")
             return cur.fetchall()
 
-def create_post(user_id, title, description, location_id, item_id, image_name, image_data):
+def create_post(user_id, title, description, location_id, item_id, image_name, image_data, image_embedding=None):
     pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
@@ -45,7 +45,11 @@ def create_post(user_id, title, description, location_id, item_id, image_name, i
                    VALUES (%s, %s, %s, %s, %s, %s) RETURNING post_id""",
                 (user_id, photo_id, title, location_id, item_id, description),
             )
-            return cur.fetchone()['post_id']
+            post_id = cur.fetchone()['post_id']
+            if image_embedding is not None and image_embedding.size>0:
+                embedding_bytes = image_embedding.tobytes()
+                cur.execute(f"insert into image_embeddings (photo_id,embedding) values (%s, %s)", (photo_id,embedding_bytes))
+            return post_id
 
 def get_or_create_user(auth_id, display_name):
     pool.open()
@@ -75,10 +79,17 @@ def get_image(photo_id):
             cur.execute("SELECT * FROM images WHERE photo_id = %s", (photo_id,))
             return cur.fetchone()
 
-def get_posts(search=None, location_id=None, item_id=None, limit=20):
+def get_all_image_embeddings():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT photo_id, embedding FROM image_embeddings")
+            return cur.fetchall()
+
+def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_photo_ids=None):
     conditions = []
     params = []
-    if search:
+    if search and ranked_photo_ids is None:
         conditions.append("(posts.title ILIKE %s OR posts.description ILIKE %s)")
         params += [f"%{search}%", f"%{search}%"]
     if location_id:
@@ -87,7 +98,20 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20):
     if item_id:
         conditions.append("posts.tag_item = %s")
         params.append(item_id)
+    if ranked_photo_ids is not None:
+        if not ranked_photo_ids:
+            return []
+        conditions.append("posts.photo_id = ANY(%s)")
+        params.append(ranked_photo_ids)
     where = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    order_by = (
+        "array_position(%s::int[], posts.photo_id)"
+        if ranked_photo_ids is not None
+        else "posts.created_at DESC"
+    )
+    if ranked_photo_ids is not None:
+        params.append(ranked_photo_ids)
 
     pool.open()
     with pool.connection() as conn:
@@ -100,7 +124,19 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20):
                     JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
                     JOIN users ON posts.user_id = users.user_id
                     {where}
-                    ORDER BY posts.created_at DESC
+                    ORDER BY {order_by}
+                    LIMIT %s""",
+                params + [limit],
+            )
+            print(
+                f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                           tag_building.building_name, tag_itemtype.item_name, users.display_name
+                    FROM posts
+                    JOIN tag_building ON posts.tag_location = tag_building.location_id
+                    JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                    JOIN users ON posts.user_id = users.user_id
+                    {where}
+                    ORDER BY {order_by}
                     LIMIT %s""",
                 params + [limit],
             )
