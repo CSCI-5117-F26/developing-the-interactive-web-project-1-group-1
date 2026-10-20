@@ -21,6 +21,15 @@
 </select>
 <button type="submit">Search</button>
 </form>
+<form action="{{url_for('search_by_image')}}" method="post" enctype="multipart/form-data" class="search-form">
+<label for="search-photo"> Search by Image</label>
+<input type="file" name="photo" accept="image/*" required >
+<input type="hidden" name="building" value="{{request.args.get('building')}}">
+<input type="hidden" name="item_type" value="{{request.args.get('item_type')}}">
+
+<button type="submit"> Find Similar Images</button>
+
+</form>
 
 <div class="item-grid">
 {% for post in posts %}

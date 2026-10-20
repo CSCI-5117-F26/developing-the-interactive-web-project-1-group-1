@@ -1,6 +1,3 @@
-from flask import Flask, request, render_template, url_for, Response
-import numpy as np
-from io import BytesIO
 # import some db package and run setup
 import os
 import random
@@ -12,6 +9,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 from developing_the_interactive_web_project_1_group_1 import database
 from developing_the_interactive_web_project_1_group_1.clip_util import embed_img, embed_text
+import numpy as np
 
 
 load_dotenv()
@@ -248,5 +246,37 @@ def too_large(e):
                            item_types=database.get_item_types(),
                            error="File is too large. Upload size limit is 10MB"), 413
 
+@app.route('/search-by-image', methods = ['POST'])
+def search_by_image():
+    photo = request.files.get('photo')
+    location_id = request.form.get('building', type=int)
+    item_id = request.form.get('item_type', type=int)
+    limit = 20
+
+    if photo is None or photo.filename =='':
+        return redirect(url_for('index'))
+    
+   
+    query_vec = embed_img(photo)
+    imgs = database.get_all_image_embeddings()
+    if not imgs:
+        ranked_photo_ids = []
+    else:
+        img_matrix = np.stack([np.frombuffer(img['embedding'], dtype=np.float32) for img in imgs])
+        scores = img_matrix @ query_vec
+        threshold = 0.5
+        idxs = np.where(scores>= threshold)[0]
+        print(scores)
+        idxs = idxs[np.argsort(-scores[idxs])]
+        ranked_photo_ids = [imgs[i]['photo_id'] for i in idxs]
+
+
+    # Get one extra post to know if there are more to load
+    posts = database.get_posts(location_id=location_id, item_id=item_id, limit=limit + 1, ranked_photo_ids= ranked_photo_ids)
+    has_more = len(posts) > limit
+
+    return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
+                            buildings=database.get_buildings(), item_types=database.get_item_types())
+    
 if __name__ == '__main__':
     app.run() 
