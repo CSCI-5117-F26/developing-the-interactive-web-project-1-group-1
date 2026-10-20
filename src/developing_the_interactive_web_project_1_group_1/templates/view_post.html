@@ -1,14 +1,31 @@
 {% extends "base.html" %}
 {% block title %}View Post{% endblock %}
 {% block main %}
-<h1>View Post Template</h1>
+<div class="view-post-left">
+  <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
+  <div class="description">
+    <h2>Description</h2>
+    <p>{{ post.description }}</p>
+  </div>
+</div>
 
-This is for post {{ post.post_id }}.<br />
-User is {{ post.user_id }}<br />
-Title is {{ post.title }}<br />
-Location is {{ post.tag_location }}<br />
-Tag is {{ post.tag_item }}<br />
-Photo id is {{ post.photo_id }}<br />
-Description is {{ post.description }}<br />
-Created at {{ post.created_at }}
+<div class="view-post-right">
+  <h1>{{ post.title }}</h1>
+  <p>Posted by {{ user.display_name }}, {{ post.created_at|time_ago }}</p>
+  <ul class="tags">
+    <li class="location"><span>{{ building.building_name }}</span></li>
+    <li><span>{{ item_type.item_name }}</span></li>
+  </ul>
+  <div class="comments-box">
+    <h2>Comments</h2>
+    <div class="comment">
+      <strong>dummyUser</strong><br />
+      <p>dummy comment text</p>
+      <form action="#" method="post">
+        <input type="text" placeholder="Add a comment..." required><br />
+        <button>Post comment</button>
+      </form>
+    </div> 
+  </div>
+</div>
 {% endblock %}

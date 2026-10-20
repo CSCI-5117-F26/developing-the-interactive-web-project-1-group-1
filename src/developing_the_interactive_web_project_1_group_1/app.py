@@ -174,7 +174,17 @@ def my_posts():
 #no login required
 def view_post(post_id):
     post = database.get_post(post_id)
-    return render_template('view_post.html', post=post)
+    user = database.get_user(post['user_id'])
+
+    buildings = database.get_buildings()
+    # find the building that matches the tag_location number associated with our post
+    building = next((i for i in buildings if i.get('location_id') == post['tag_location']), None)
+
+    item_types = database.get_item_types()
+    # find the item_type that matches the tag_item number associated with our post
+    item_type = next((i for i in item_types if i.get('item_id') == post['tag_item']), None)
+
+    return render_template('view_post.html', post=post, user=user, building=building, item_type=item_type)
 
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
