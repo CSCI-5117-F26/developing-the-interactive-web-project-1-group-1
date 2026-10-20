@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Login Title Here{% endblock %}
+{% block main %}
+<h1>View Post Template</h1>
+
+This is for post {{ post.post_id }}.<br />
+User is {{ post.user_id }}<br />
+Title is {{ post.title }}<br />
+Location is {{ post.tag_location }}<br />
+Tag is {{ post.tag_item }}<br />
+Photo id is {{ post.photo_id }}<br />
+Description is {{ post.description }}<br />
+Created at {{ post.created_at }}
+{% endblock %}
