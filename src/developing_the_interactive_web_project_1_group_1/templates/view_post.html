@@ -16,11 +16,27 @@
     <li class="location"><span>{{ building.building_name }}</span></li>
     <li><span>{{ item_type.item_name }}</span></li>
   </ul>
+  <div class="location-map">
+    <h2>Where to pick it up</h2>
+    <h3>Dummy location, front desk, 1st floor</h3>
+    <div class="hours">Dummy hours, M-F, 8:00am - 5:00pm</div>
+    <div class="map">
+      Map image here. Maybe we can use the ArcGIS interactive map element.
+      See <a href="https://campusmaps.umn.edu/10-church-street-building">this
+page for example</a>
+    </div>
+  </div>
   <div class="comments-box">
+{# dummy comments here. Remove this when wiring up #}
+{% set comments = [{"user": "dummyuser1", "text":"Does it have the initials
+RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
+"dummyuser1", "text": "Cool, that's mine! Thank you for posting!"} ] %}
     <h2>Comments</h2>
     <div class="comment">
-      <strong>dummyUser</strong><br />
-      <p>dummy comment text</p>
+      {% for comment in comments %}
+      <strong>{{ comment.user }}</strong><br />
+      <p>{{ comment.text }}</p>
+      {% endfor %}
       <form action="#" method="post">
         <input type="text" placeholder="Add a comment..." required><br />
         <button>Post comment</button>
