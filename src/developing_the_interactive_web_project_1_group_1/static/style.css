@@ -39,7 +39,7 @@ a {
 }
 
 /* buttons + form controls, shared by every page */
-button {
+button, .button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -48,9 +48,10 @@ button {
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
 }
 
-button:hover {
+button:hover, .button:hover {
   background: var(--black);
   color: var(--white);
 }
