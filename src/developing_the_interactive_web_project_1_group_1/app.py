@@ -174,6 +174,9 @@ def my_posts():
 #no login required
 def view_post(post_id):
     post = database.get_post(post_id)
+    if post is None:
+        abort(404)
+
     user = database.get_user(post['user_id'])
     is_users_post = session.get('user_id', None) == post['user_id']  
 
