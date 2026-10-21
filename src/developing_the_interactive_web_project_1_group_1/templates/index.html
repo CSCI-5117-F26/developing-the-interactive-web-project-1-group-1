@@ -23,6 +23,7 @@
 </form>
 
 <div class="item-grid">
+{% for post in posts %}
   <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="item-card-link">
     <div class="item-card">
       <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
