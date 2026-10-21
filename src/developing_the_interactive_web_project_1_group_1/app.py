@@ -7,7 +7,7 @@ from functools import wraps
 from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
-from developing_the_interactive_web_project_1_group_1 import database
+import developing_the_interactive_web_project_1_group_1.database as database
 from developing_the_interactive_web_project_1_group_1.clip_util import embed_img, embed_text
 import numpy as np
 
