@@ -5,6 +5,7 @@ import atexit
 import dotenv
 
 #copied exsample code from kluver
+dotenv.load_dotenv()
 pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, min_size=4, max_size=20, kwargs={"row_factory": dict_row})
 atexit.register(pool.close)
 is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
