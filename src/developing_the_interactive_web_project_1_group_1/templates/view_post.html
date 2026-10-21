@@ -30,7 +30,7 @@ page for example</a>
 {# dummy comments here. Remove this when wiring up #}
 {% set comments = [{"user": "dummyuser1", "text":"Does it have the initials
 RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
-"dummyuser1", "text": "Cool, that's mine! Thank you for posting!"} ] %}
+"dummyuser1", "text": "Cool, that's mine! Thank you for posting!"}] %}
     <h2>Comments</h2>
     <div class="comment">
       {% for comment in comments %}
@@ -43,5 +43,10 @@ RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
       </form>
     </div> 
   </div>
+  {% if is_users_post %}
+  <div class="owner-panel">
+    <button>Edit post</button> <button>Delete</button> 
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
