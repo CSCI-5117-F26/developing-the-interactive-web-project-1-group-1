@@ -20,7 +20,6 @@ app.secret_key = os.environ["FLASK_SECRET_KEY"]
 # 10MB limit
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
-database.setup()
 
 oauth = OAuth(app)
 oauth.register(

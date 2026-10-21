@@ -2,33 +2,29 @@ from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 import os
 import atexit
+import dotenv
 
-pool = None
 #copied exsample code from kluver
-def setup():
-    global pool
-    # open=false is the fix Kluver recommended for the DB issue
-    pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, kwargs={"row_factory": dict_row})
-    atexit.register(pool.close)
-
+pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, min_size=4, max_size=20, kwargs={"row_factory": dict_row})
+atexit.register(pool.close)
+is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+if not is_gunicorn:
+    pool.open()
 #worry about context managers later, when we actually need to work with data... but use %s
 #well later is now, lucky me :)
 def get_buildings():
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM tag_building ORDER BY building_name")
             return cur.fetchall()
 
 def get_item_types():
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM tag_itemtype ORDER BY item_name")
             return cur.fetchall()
 
 def create_post(user_id, title, description, location_id, item_id, image_name, image_data, image_embedding=None):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             # first get the image into the db successfully
@@ -52,7 +48,6 @@ def create_post(user_id, title, description, location_id, item_id, image_name, i
             return post_id
 
 def get_or_create_user(auth_id, display_name):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE auth_id = %s", (auth_id,))
@@ -66,21 +61,18 @@ def get_or_create_user(auth_id, display_name):
             return user
 
 def get_user(user_id):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
             return cur.fetchone()
 
 def get_image(photo_id):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM images WHERE photo_id = %s", (photo_id,))
             return cur.fetchone()
 
 def get_all_image_embeddings():
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT photo_id, embedding FROM image_embeddings")
@@ -113,7 +105,6 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_pho
     if ranked_photo_ids is not None:
         params.append(ranked_photo_ids)
 
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -143,14 +134,12 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_pho
             return cur.fetchall()
 
 def get_post(post_id):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM posts WHERE post_id = %s", (post_id,))
             return cur.fetchone()
 
 def get_posts_for_user(user_id):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -167,7 +156,6 @@ def get_posts_for_user(user_id):
             return cur.fetchall()
 
 def update_post(post_id, user_id, title, description, location_id, item_id, image_name=None, image_data=None):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -184,7 +172,6 @@ def update_post(post_id, user_id, title, description, location_id, item_id, imag
                 )
 
 def delete_post(post_id, user_id):
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM posts WHERE post_id = %s AND user_id = %s RETURNING photo_id",
