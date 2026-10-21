@@ -238,6 +238,13 @@ main {
   padding: 0.2rem;
 }
 
+/* Makes the item card a link without screwing up the styling */
+.item-card-link {
+  display: block;  
+  text-decoration: none;
+  color: inherit;
+}
+
 /* my posts page */
 .posts-table {
   width: 100%;
