@@ -8,9 +8,9 @@ import dotenv
 dotenv.load_dotenv()
 pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, min_size=4, max_size=20, kwargs={"row_factory": dict_row})
 atexit.register(pool.close)
-is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
-if not is_gunicorn:
-    pool.open()
+# is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+# if not is_gunicorn:
+#     pool.open()
 #worry about context managers later, when we actually need to work with data... but use %s
 #well later is now, lucky me :)
 def get_buildings():
