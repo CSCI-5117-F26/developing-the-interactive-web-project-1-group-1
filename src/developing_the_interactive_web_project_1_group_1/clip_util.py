@@ -12,8 +12,9 @@ print("Using:", device)
 
 model_name = "ViT-B/32"
 print("loading mdoel ")
-cache_dir = "./.cache/torch"
+cache_dir = os.path.abspath("./.cache/torch")
 os.makedirs(cache_dir, exist_ok=True)
+print("cache? :" ,os.path.exists(cache_dir))
 model, preprocess = clip.load(model_name, device=device, download_root=cache_dir)
 print("loaded mdoel ")
 
