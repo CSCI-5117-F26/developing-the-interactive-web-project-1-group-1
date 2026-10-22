@@ -23,3 +23,19 @@ INSERT INTO tag_building (building_name, address, latitude, longitude) VALUES
     ('Wilson Library', '309 19th Ave S, Minneapolis, MN 55455', 44.9708194, -93.2435866)
 ON CONFLICT (building_name) DO UPDATE
 SET address = EXCLUDED.address, latitude = EXCLUDED.latitude, longitude = EXCLUDED.longitude;
+
+INSERT INTO tag_itemtype (item_name) VALUES
+	('UCard'),
+	('Water Bottles & Drinkware'),
+	('Bags & Backpacks'),
+	('Books & Notes'),
+	('Childrens'' Items'),
+	('Clothing'),
+	('Electronics'),
+	('Eyewear'),
+	('Footwear'),
+	('Keys'),
+	('Wallets & Purses'),
+	('Watches & Jewelry'),
+	('Other')
+ON CONFLICT (item_name) DO NOTHING;
