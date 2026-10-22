@@ -24,7 +24,7 @@ def get_item_types():
     pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM tag_itemtype ORDER BY item_name")
+            cur.execute("SELECT * FROM tag_itemtype ORDER BY item_id")
             return cur.fetchall()
 
 def create_post(user_id, title, description, location_id, item_id, image_name, image_data):
