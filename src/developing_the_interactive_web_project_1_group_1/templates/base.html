@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!-- Template modified from https://www.freecodecamp.org/news/html-starter-template-a-basic-html5-boilerplate-for-index-html/ -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css"
+integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls"
+crossorigin="anonymous">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-left">
+        <!-- Logo image (static/logo.png was generated using ChatGPT  -->
+        <a href="{{ url_for('index') }}" class="logo">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Lost and Found home" />
+        </a>
+        <nav class="nav-links">
+          <a href="#">Found items</a>
+          <a href="#">L&amp;F locations</a>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <form action="{{ url_for('create_post') }}" method="get">
+          <button class="btn-accent">+ I found something</button>
+        </form>
+
+        {% if session.user %}
+          <span>{{ session.display_name }}</span>
+          <details class="account-menu">
+            <summary class="button">Account &#9662;</summary>
+            <nav class="account-options">
+              <a href="{{ url_for('my_posts') }}">My posts</a>
+              {# account page not built yet #}
+              <a href="#">Account</a>
+              <a href="{{ url_for('logout') }}">Log out</a>
+            </nav>
+          </details>
+        {% else %}
+          <form action="{{ url_for('login') }}" method="get">
+            <button>Log in</button>
+          </form>
+        {% endif %}
+      </div>
+    </header>
+
+    <main>
+    {# small banners from flash() in app.py, like "Login cancelled." #}
+    {% for message in get_flashed_messages() %}
+      <p class="flash" role="status">
+        {{ message }}
+        {% if not session.user %}<a href="{{ url_for('login') }}">Try again</a>{% endif %}
+      </p>
+    {% endfor %}
+    {% block main %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      Footer Block <br>
+      Fleshing out footer
+    </footer>
+    <script>
+      // fade out the flash banners after 5 seconds
+      setTimeout(function () {
+        document.querySelectorAll('.flash').forEach(function (banner) {
+          banner.classList.add('flash-hidden');
+          setTimeout(function () { banner.remove(); }, 500);
+        });
+      }, 8000);
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

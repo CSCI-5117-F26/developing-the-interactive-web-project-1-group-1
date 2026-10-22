@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Lost and Found{% endblock %}
+{% block main %}
+<h1>Recently found on campus</h1>
+<p>Search by keyword, or filter by building and item type</p>
+<form action="{{ url_for('index') }}" method="get" role="search" class="search-form">
+<input type="search" id="q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search items... e.g. 'blue water bottle'">
+<select id="building" name="building">
+  <option value="">Building: Any</option>
+  {% for b in buildings %}
+  <option value="{{ b.location_id }}"
+    {% if request.args.get('building') == b.location_id|string %}selected{% endif %}>{{ b.building_name }}</option>
+  {% endfor %}
+</select>
+<select id="item_type" name="item_type">
+  <option value="">Item Type: Any</option>
+  {% for t in item_types %}
+  <option value="{{ t.item_id }}"
+    {% if request.args.get('item_type') == t.item_id|string %}selected{% endif %}>{{ t.item_name }}</option>
+  {% endfor %}
+</select>
+<button type="submit">Search</button>
+</form>
+
+<div class="item-grid">
+{% for post in posts %}
+  <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="item-card-link">
+    <div class="item-card">
+      <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
+      <div class="item-info">
+        <h3 class="item-title">{{ post.title }}<span>Posted by {{ post.display_name }},<br>{{ post.created_at|time_ago }}</span></h3>
+        <ul class="tags">
+          <li class="location">{{ post.building_name }}</li>
+          <li class="type">{{ post.item_name }}</li>
+        </ul>
+      </div>
+    </div>
+  </a>
+{% else %}
+<p>No items found.</p>
+{% endfor %}
+</div>
+
+{% if has_more %}
+<form action="{{ url_for('index') }}" method="get">
+  <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+  <input type="hidden" name="building" value="{{ request.args.get('building', '') }}">
+  <input type="hidden" name="item_type" value="{{ request.args.get('item_type', '') }}">
+  <input type="hidden" name="limit" value="{{ limit + 20 }}">
+  <button type="submit">Load More</button>
+</form>
+{% endif %}
+{% endblock %}

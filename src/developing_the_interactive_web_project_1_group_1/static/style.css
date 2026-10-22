@@ -1,0 +1,372 @@
+:root {
+  --white: #ffffff;
+  --off-white: #fafaf8;
+  --black: #1a1a1a;
+  --maroon: #6d001f;
+  --yellow: #ffcc33;
+  --border: #e3e3e3;
+  --radius: 8px;
+  --page-width: 1360px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--off-white);
+  color: var(--black);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--maroon);
+}
+
+/* buttons + form controls, shared by every page */
+button, .button {
+  padding: 0.55rem 1.1rem;
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button:hover, .button:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* for the standout button like "I found something" */
+.btn-accent {
+  border-color: var(--maroon);
+  background: var(--maroon);
+  color: var(--yellow);
+}
+
+.btn-accent:hover {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--maroon);
+}
+
+input,
+select,
+textarea {
+  padding: 0.55rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+}
+
+/* header */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  border-top: 4px solid var(--maroon);
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo img {
+  display: block;
+  height: 50px;
+  border-radius: var(--radius);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  padding: 0.25rem 0;
+  color: var(--black);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--maroon);
+}
+
+/* account dropdown in the header */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-options {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.account-options a {
+  padding: 0.5rem 1rem;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.account-options a:hover {
+  background: var(--off-white);
+}
+
+/* main content */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* footer */
+.site-footer {
+  padding: 1.5rem;
+  border-top: 4px solid var(--yellow);
+  background: var(--maroon);
+  color: var(--white);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* create post page */
+.post-page {
+  max-width: 640px;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+}
+
+.field img {
+  display: block;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.form-error {
+  color: #b00020;
+  font-weight: 600;
+}
+
+.flash {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--maroon);
+  font-size: 0.9rem;
+  transition: opacity 0.5s;
+}
+
+.flash a {
+  margin-left: 0.5rem;
+}
+
+.flash-hidden {
+  opacity: 0;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* item cards, layout adapted from the "Most Popular" cards in templatemo's Cyborg Gaming template:
+   https://templatemo.com/live/templatemo_579_cyborg_gaming (colors swapped for our own) */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 30px;
+  margin-bottom: 1.5rem;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+/* maroon strip on top and shadow so each card stands out more from its neighbours */
+.item-card {
+  height: 100%;
+  padding: 30px 15px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--maroon);
+  border-radius: 23px;
+  background: var(--off-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.item-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 23px;
+}
+
+.item-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 20px;
+}
+
+.item-title {
+  flex: 1 1 0;
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.item-title span {
+  display: block;
+  margin-top: 7px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+/* bordered "bubble" tags, from Ray's PR */
+.tags li {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+}
+
+.tags li::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.tags .location::before {
+  background: var(--maroon);
+}
+
+.tags .type::before {
+  background: var(--yellow);
+}
+
+/* Makes the item card a link without screwing up the styling */
+.item-card-link {
+  display: block;  
+  text-decoration: none;
+  color: inherit;
+}
+
+/* my posts page */
+.posts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.posts-table th,
+.posts-table td {
+  padding: 0.5rem;
+  border: 1px solid black;
+  text-align: left;
+}
+
+.post-thumb {
+  width: 60px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .header-left,
+  .header-right {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1.25rem 1rem;
+  }
+}
