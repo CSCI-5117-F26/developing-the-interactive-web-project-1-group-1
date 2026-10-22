@@ -13,6 +13,7 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
     <title>{% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
   </head>
   <body>
     <header class="site-header">
@@ -22,7 +23,8 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
           <img src="{{ url_for('static', filename='logo.png') }}" alt="Lost and Found home" />
         </a>
         <nav class="nav-links">
-          <a href="#">L&amp;F locations</a>
+          <a href="{{ url_for('index') }}">Found items</a>
+          <a href="{{ url_for('locations') }}">L&amp;F locations</a>
         </nav>
       </div>
 

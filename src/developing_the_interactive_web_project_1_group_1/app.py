@@ -169,6 +169,10 @@ def my_posts():
     posts = database.get_posts_for_user(session['user_id'])
     return render_template('my_posts.html', posts=posts)
 
+@app.route('/locations')
+def locations():
+    return render_template('locations.html', buildings=database.get_buildings())
+
 @app.route('/posts/<int:post_id>', methods=['GET'])
 #no login required
 def view_post(post_id):
