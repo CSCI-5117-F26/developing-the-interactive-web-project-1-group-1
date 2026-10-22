@@ -1,5 +1,6 @@
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
+import psycopg
 import os
 import atexit
 import dotenv
@@ -13,6 +14,15 @@ atexit.register(pool.close)
 #     pool.open()
 #worry about context managers later, when we actually need to work with data... but use %s
 #well later is now, lucky me :)
+
+#teest 
+print("connecting")
+with psycopg.connect(os.environ["DATABASE_URL"],connect_timeout=10, row_factory=dict_row) as conn:
+    print("connected")
+    with conn.cursor() as cur:
+        cur.execute("SELECT NOW()")
+        print(cur.fetchone(), flush=True)
+
 def get_buildings():
     with pool.connection() as conn:
         with conn.cursor() as cur:
@@ -107,7 +117,9 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_pho
         params.append(ranked_photo_ids)
 
     with pool.connection() as conn:
+        print("pool??? ")
         with conn.cursor() as cur:
+            print("before q ")
             cur.execute(
                 f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
                            tag_building.building_name, tag_itemtype.item_name, users.display_name
@@ -120,6 +132,7 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_pho
                     LIMIT %s""",
                 params + [limit],
             )
+            print("after q?")
             print(
                 f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
                            tag_building.building_name, tag_itemtype.item_name, users.display_name
