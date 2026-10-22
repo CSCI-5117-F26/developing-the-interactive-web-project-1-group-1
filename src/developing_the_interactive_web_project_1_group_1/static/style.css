@@ -329,12 +329,28 @@ main {
   gap: 0.5rem;
 }
 
-/* view post page, layout skeleton only (styling to be added later) */
+/* view post page, cards match the rounded white boxes on the home feed */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--maroon);
+}
+
 .view-post {
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 30px;
   align-items: start;
+  margin-bottom: 30px;
 }
 
 .view-post-left,
@@ -342,18 +358,61 @@ main {
   min-width: 0;
 }
 
+.view-post-left {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+.view-post-left h1 {
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.post-meta {
+  margin: 0.25rem 0 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
 .view-post-left img {
   display: block;
   width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--off-white);
 }
 
-.description {
-  grid-column: 1 / -1;
+.view-post-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* on this page the tags sit in a row instead of stacked on a card */
+.view-post-right .tags {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.view-post-right .tags li {
+  padding: 0.3rem 0.8rem;
+  border-color: var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  font-weight: 500;
 }
 
 .owner-panel {
   display: flex;
   gap: 0.5rem;
+}
+
+.description {
+  grid-column: 1 / -1;
 }
 
 .comment-form {
@@ -369,6 +428,14 @@ main {
 @media (max-width: 700px) {
   .view-post {
     grid-template-columns: 1fr;
+  }
+
+  .view-post-left {
+    padding: 16px;
+  }
+
+  .view-post-left h1 {
+    font-size: 1.5rem;
   }
 
   .comment-form {
