@@ -126,12 +126,35 @@ textarea {
   color: var(--maroon);
 }
 
-.account-select {
-  border-color: var(--black);
-  border-radius: 999px;
-  padding-left: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+/* account dropdown in the header */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-options {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.account-options a {
+  padding: 0.5rem 1rem;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.account-options a:hover {
+  background: var(--off-white);
 }
 
 /* main content */
