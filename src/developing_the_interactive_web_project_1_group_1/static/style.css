@@ -329,7 +329,52 @@ main {
   gap: 0.5rem;
 }
 
+/* view post page, layout skeleton only (styling to be added later) */
+.view-post {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.view-post-left,
+.view-post-right {
+  min-width: 0;
+}
+
+.view-post-left img {
+  display: block;
+  width: 100%;
+}
+
+.description {
+  grid-column: 1 / -1;
+}
+
+.owner-panel {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+}
+
 @media (max-width: 700px) {
+  .view-post {
+    grid-template-columns: 1fr;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
   .site-header {
     flex-direction: column;
     align-items: flex-start;
