@@ -28,7 +28,7 @@
     <div class="item-card">
       <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
       <div class="item-info">
-        <h3 class="item-title">{{ post.title }}<span>Posted by {{ post.display_name }}, {{ post.created_at|time_ago }}</span></h3>
+        <h3 class="item-title">{{ post.title }}<span>Posted by {{ post.display_name }},<br>{{ post.created_at|time_ago }}</span></h3>
         <ul class="tags">
           <li class="location">{{ post.building_name }}</li>
           <li class="type">{{ post.item_name }}</li>

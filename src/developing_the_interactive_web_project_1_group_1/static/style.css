@@ -6,7 +6,7 @@
   --yellow: #ffcc33;
   --border: #e3e3e3;
   --radius: 8px;
-  --page-width: 1200px;
+  --page-width: 1360px;
 }
 
 * {
@@ -216,7 +216,7 @@ main {
    https://templatemo.com/live/templatemo_579_cyborg_gaming (colors swapped for our own) */
 .item-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 30px;
   margin-bottom: 1.5rem;
   padding: 30px;
@@ -241,6 +241,7 @@ main {
 
 .item-info {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.75rem;
@@ -248,7 +249,7 @@ main {
 }
 
 .item-title {
-  min-width: 0;
+  flex: 1 1 0;
   margin: 0;
   font-size: 15px;
   overflow-wrap: anywhere;
@@ -260,6 +261,7 @@ main {
   color: #666;
   font-size: 0.85rem;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 .tags {
