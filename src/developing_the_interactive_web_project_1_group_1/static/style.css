@@ -385,6 +385,184 @@ main {
   gap: 0.5rem;
 }
 
+/* view post page, cards match the rounded white boxes on the home feed */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--maroon);
+}
+
+.view-post {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 30px;
+  
+  /* stretch so the right column is as tall as the photo card */
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+
+.view-post-left,
+.view-post-right {
+  min-width: 0;
+}
+
+.view-post-left,
+.location-map,
+.description,
+.comments-box {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+.view-post-left h1 {
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.post-meta {
+  margin: 0.25rem 0 0.75rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.view-post-left img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--off-white);
+}
+
+.view-post-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* on this page the tags sit in a row above the photo instead of on a card */
+.view-post-left .tags {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.view-post-left .tags li {
+  padding: 0.3rem 0.8rem;
+  border-color: var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  font-weight: 500;
+}
+
+/* grows to fill the leftover column height so there's no gap under it */
+.location-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-top: 4px solid var(--maroon);
+}
+
+.location-map h2,
+.description h2,
+.comments-box h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.location-map h3 {
+  font-size: 1rem;
+}
+
+.hours {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* plain gray placeholder until the real map is wired up */
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 260px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #e0e0e0;
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* edit/delete sit under the photo, on the right */
+.owner-panel {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.owner-panel form {
+  margin: 0;
+}
+
+.owner-panel button {
+  border-color: #b00020;
+  color: #b00020;
+}
+
+.owner-panel button:hover {
+  background: #b00020;
+  color: var(--white);
+}
+
+.description {
+  grid-column: 1 / -1;
+}
+
+.description p {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* shown when a post has no description */
+.empty-note {
+  color: #888;
+}
+
+/* bigger maroon heading with a line under it to set it apart from the comments (The heading Comments) */
+.comments-box h2 {
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--maroon);
+  font-size: 1.5rem;
+}
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+}
+
 .post-content p {
   margin: 18px 0;
 }
@@ -413,6 +591,25 @@ main {
 }
 
 @media (max-width: 700px) {
+  .view-post {
+    grid-template-columns: 1fr;
+  }
+
+  .view-post-left,
+  .location-map,
+  .description,
+  .comments-box {
+    padding: 16px;
+  }
+
+  .view-post-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
   .site-header {
     flex-direction: column;
     align-items: flex-start;
