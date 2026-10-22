@@ -100,14 +100,10 @@ textarea {
   gap: 1.5rem;
 }
 
-.logo {
-  padding: 0.35rem 0.9rem;
+.logo img {
+  display: block;
+  height: 50px;
   border-radius: var(--radius);
-  background: var(--maroon);
-  color: var(--yellow);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-decoration: none;
 }
 
 .nav-links {

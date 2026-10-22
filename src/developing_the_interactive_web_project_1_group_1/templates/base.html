@@ -11,12 +11,16 @@ crossorigin="anonymous">
     <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
     <header class="site-header">
       <div class="header-left">
-        <a href="{{ url_for('index') }}" class="logo">LOGO</a>
+        <!-- Logo image (static/logo.png was generated using ChatGPT  -->
+        <a href="{{ url_for('index') }}" class="logo">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Lost and Found home" />
+        </a>
         <nav class="nav-links">
           <a href="#">Found items</a>
           <a href="#">L&amp;F locations</a>
