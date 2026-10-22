@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}View Post{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
 {% block main %}
 <div class="view-post-left">
   <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
@@ -18,11 +22,14 @@
   </ul>
   <div class="location-map">
     <h2>Where to pick it up</h2>
-    <h3>Dummy location, front desk, 1st floor</h3>
-    <div class="hours">Dummy hours, M-F, 8:00am - 5:00pm</div>
-    <div class="map">
-      [Map should go here. Tech share coming on this]
-    </div>
+    <h3>{{ building.building_name }} Lost &amp; Found</h3>
+    {% if building.address %}
+    <p>{{ building.address }}</p>
+    <button type="button" class="copy-address" data-address="{{ building.address }}">Copy address</button>
+    {% endif %}
+    {% if building.latitude %}
+    <div id="pickup-map" class="map"></div>
+    {% endif %}
   </div>
   <div class="comments-box">
 {# dummy comments here. Remove this when wiring up #}
@@ -51,4 +58,14 @@ RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
   </div>
   {% endif %}
 </div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="{{ url_for('static', filename='locations.js') }}"></script>
+{% if building.latitude %}
+<script>
+  showBuildingsMap('pickup-map', [{{ building|tojson }}], false);
+</script>
+{% endif %}
 {% endblock %}
