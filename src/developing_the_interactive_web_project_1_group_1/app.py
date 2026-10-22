@@ -1,12 +1,11 @@
 import os
-import random
 import mimetypes
 from datetime import datetime, timezone
 from functools import wraps
 from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
-from developing_the_interactive_web_project_1_group_1 import database
+from developing_the_interactive_web_project_1_group_1 import database, usernames
 
 load_dotenv()
 
@@ -119,7 +118,7 @@ def callback():
         flash(message)
         return auth0_logout(url_for('index', _external=True))
 
-    display_name = f"user{random.randint(1000, 9999)}"
+    display_name = usernames.unique_username()
     user = database.get_or_create_user(userinfo['sub'], display_name)
 
     session['user'] = token

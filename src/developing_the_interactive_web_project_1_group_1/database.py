@@ -68,6 +68,27 @@ def get_user(user_id):
             cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
             return cur.fetchone()
 
+def get_all_users():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM users ORDER BY user_id")
+            return cur.fetchall()
+
+def display_name_taken(display_name):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT user_id FROM users WHERE display_name = %s", (display_name,))
+            return cur.fetchone() is not None
+
+def update_display_name(user_id, display_name):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE users SET display_name = %s WHERE user_id = %s",
+                        (display_name, user_id))
+
 def get_image(photo_id):
     pool.open()
     with pool.connection() as conn:
