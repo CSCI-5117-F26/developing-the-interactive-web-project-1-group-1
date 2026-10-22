@@ -16,7 +16,7 @@
         </form>
         <form action="{{ url_for('delete_post', post_id=post.post_id) }}" method="post"
               onsubmit="return confirm('Delete this post?');">
-          <button type="submit">Delete</button>
+          <button type="submit" class="delete-button">Delete</button>
         </form>
       </div>
       {% if post.description %}<p>{{ post.description }}</p>{% endif %}
