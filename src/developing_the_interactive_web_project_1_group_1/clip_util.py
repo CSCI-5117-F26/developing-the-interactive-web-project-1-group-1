@@ -19,8 +19,9 @@ model, preprocess = clip.load(model_name, device=device, download_root=cache_dir
 print("loaded mdoel ")
 
 model.eval()
-
+print(" eval loaded ")
 def embed_text(q):
+    print("im here ")
     s = time.monotonic()
     print("EMbed:starting ")
     txt = clip.tokenize([q]).to(device)
