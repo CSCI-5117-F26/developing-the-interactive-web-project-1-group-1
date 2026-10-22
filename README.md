@@ -22,13 +22,13 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-* ...
+* Login restriction that prevents non-UMN from registering with the site across email and Sign In With Google.
 
 ## Testing Notes
 
 **Is there anything special we need to know in order to effectively test your app? (optional):**
 
-* ...
+* Must utilize a verified umn.edu email address to register.
 
 
 ## Screenshots of Site
@@ -77,8 +77,8 @@ along with a very brief caption:**
 **Document integrations with 3rd Party code or services here.
 Please do not document required libraries. or libraries that are mentioned in the product requirements**
 
-* Library or service name: description of use
-* ...
+* Leaflet: interactive maps on he location and item pages
+* OpenStreetMap: map tiles for Leaflet, plus the building addresses and coordinates
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
