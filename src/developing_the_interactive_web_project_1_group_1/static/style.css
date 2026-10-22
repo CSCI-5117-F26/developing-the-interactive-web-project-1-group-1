@@ -100,14 +100,10 @@ textarea {
   gap: 1.5rem;
 }
 
-.logo {
-  padding: 0.35rem 0.9rem;
+.logo img {
+  display: block;
+  height: 50px;
   border-radius: var(--radius);
-  background: var(--maroon);
-  color: var(--yellow);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-decoration: none;
 }
 
 .nav-links {
@@ -126,12 +122,35 @@ textarea {
   color: var(--maroon);
 }
 
-.account-select {
-  border-color: var(--black);
-  border-radius: 999px;
-  padding-left: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+/* account dropdown in the header */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-options {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.account-options a {
+  padding: 0.5rem 1rem;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.account-options a:hover {
+  background: var(--off-white);
 }
 
 /* main content */
@@ -225,10 +244,15 @@ main {
   background: var(--white);
 }
 
+/* maroon strip on top and shadow so each card stands out more from its neighbours */
 .item-card {
+  height: 100%;
   padding: 30px 15px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--maroon);
   border-radius: 23px;
   background: var(--off-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .item-card img {
@@ -281,6 +305,14 @@ main {
   padding: 0.2rem 0.5rem;
   border: 1px solid black;
   border-radius: 0.5rem;
+  background: var(--white);
+}
+
+/* Makes the item card a link without screwing up the styling */
+.item-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .tags li::before {
@@ -300,31 +332,55 @@ main {
   background: var(--yellow);
 }
 
-/* Makes the item card a link without screwing up the styling */
-.item-card-link {
-  display: block;  
-  text-decoration: none;
-  color: inherit;
+/* my posts page, list layout adapted from the "Visit One Of Our Countries Now" section in templatemo's WoOx Travel template:
+   https://templatemo.com/live/templatemo_580_woox_travel (colors swapped for our own) */
+.post-list {
+  margin-top: 1.5rem;
 }
 
-/* my posts page */
-.posts-table {
-  width: 100%;
-  border-collapse: collapse;
+.post-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border);
 }
 
-.posts-table th,
-.posts-table td {
-  padding: 0.5rem;
-  border: 1px solid black;
-  text-align: left;
+.post-row:last-child {
+  border-bottom: none;
 }
 
 .post-thumb {
-  width: 60px;
+  flex: 0 0 280px;
+  width: 280px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 23px;
+}
+
+.post-content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-content h2 {
+  margin-bottom: 5px;
+  padding-right: 11rem;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.post-building {
+  display: block;
+  color: #afafaf;
+  font-size: 15px;
 }
 
 .post-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   gap: 0.5rem;
 }
@@ -425,6 +481,33 @@ main {
   min-width: 0;
 }
 
+.post-content p {
+  margin: 18px 0;
+}
+
+.post-info {
+  display: flex;
+  margin: 18px 0 0;
+  padding: 15px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+  color: #afafaf;
+  font-size: 14px;
+}
+
+.post-info li {
+  flex: 1;
+}
+
+.post-info li:nth-child(2) {
+  text-align: center;
+}
+
+.post-info li:last-child {
+  text-align: right;
+}
+
 @media (max-width: 700px) {
   .view-post {
     grid-template-columns: 1fr;
@@ -456,5 +539,25 @@ main {
 
   main {
     padding: 1.25rem 1rem;
+  }
+
+  /* stack the my posts rows: photo on top, buttons back in the flow */
+  .post-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .post-thumb {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .post-content h2 {
+    padding-right: 0;
+  }
+
+  .post-actions {
+    position: static;
+    margin-top: 0.75rem;
   }
 }
