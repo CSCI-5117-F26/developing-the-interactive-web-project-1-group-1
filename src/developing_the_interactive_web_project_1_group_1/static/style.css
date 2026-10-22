@@ -405,7 +405,9 @@ main {
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 30px;
-  align-items: start;
+  
+  /* stretch so the right column is as tall as the photo card */
+  align-items: stretch;
   margin-bottom: 30px;
 }
 
@@ -414,7 +416,8 @@ main {
   min-width: 0;
 }
 
-.view-post-left {
+.view-post-left,
+.location-map {
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 23px;
@@ -460,6 +463,44 @@ main {
   border-radius: 999px;
   background: var(--white);
   font-weight: 500;
+}
+
+/* grows to fill the leftover column height so there's no gap under it */
+.location-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-top: 4px solid var(--maroon);
+}
+
+.location-map h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.location-map h3 {
+  font-size: 1rem;
+}
+
+.hours {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* plain gray placeholder until the real map is wired up */
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 260px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #e0e0e0;
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .owner-panel {
@@ -513,7 +554,8 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .view-post-left {
+  .view-post-left,
+  .location-map {
     padding: 16px;
   }
 
