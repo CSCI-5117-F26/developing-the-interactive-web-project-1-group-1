@@ -18,7 +18,7 @@
       {% if b.address %}
       <button type="button" class="copy-address" data-address="{{ b.address }}">Copy address</button>
       {% endif %}
-      <a href="{{ url_for('index', building=b.location_id) }}">See items found here</a>
+      <a href="{{ url_for('index', building=b.location_id) }}" class="button">See items found here</a>
     </li>
     {% endfor %}
   </ul>
