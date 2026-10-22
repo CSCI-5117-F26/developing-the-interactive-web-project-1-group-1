@@ -24,16 +24,18 @@
 
 <div class="item-grid">
 {% for post in posts %}
-<div class="item-card">
-  <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
-  <div class="item-info">
-    <h3 class="item-title">{{ post.title }}<span>Posted by {{ post.display_name }}, {{ post.created_at|time_ago }}</span></h3>
-    <ul class="tags">
-      <li class="location">{{ post.building_name }}</li>
-      <li class="type">{{ post.item_name }}</li>
-    </ul>
-  </div>
-</div>
+  <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="item-card-link">
+    <div class="item-card">
+      <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
+      <div class="item-info">
+        <h3 class="item-title">{{ post.title }}<span>Posted by {{ post.display_name }}, {{ post.created_at|time_ago }}</span></h3>
+        <ul class="tags">
+          <li class="location">{{ post.building_name }}</li>
+          <li class="type">{{ post.item_name }}</li>
+        </ul>
+      </div>
+    </div>
+  </a>
 {% else %}
 <p>No items found.</p>
 {% endfor %}
