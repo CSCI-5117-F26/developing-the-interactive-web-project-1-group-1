@@ -29,32 +29,30 @@
   </div>
 
   <div class="view-post-right">
-    <h1>{{ post.title }}</h1>
-    <p>Posted by {{ user.display_name }}, {{ post.created_at|time_ago }}</p>
-    <ul class="tags">
-      <li class="location"><span>{{ building.building_name }}</span></li>
-      <li><span>{{ item_type.item_name }}</span></li>
-    </ul>
     <div class="location-map">
       <h2>Where to pick it up</h2>
       <h3>{{ building.building_name }} Lost &amp; Found</h3>
       {% if building.address %}
-      <div class="hours">Dummy hours, M-F, 8:00am - 5:00pm</div>
+      <p>{{ building.address }}</p>
+      <button type="button" class="copy-address" data-address="{{ building.address }}">Copy address</button>
+      {% endif %}
       {% if building.latitude %}
       <div id="pickup-map" class="map"></div>
       {% endif %}
     </div>
-
-    <div class="description">
-      <h2>Description</h2>
-      {% if post.description %}
-      <p>{{ post.description }}</p>
-      {% else %}
-      <p class="empty-note">No description given. Maybe ask in the comments below!</p>
-      {% endif %}
-    </div>
   </div>
-  <div class="comments-box">
+
+  <div class="description">
+    <h2>Description</h2>
+    {% if post.description %}
+    <p>{{ post.description }}</p>
+    {% else %}
+    <p class="empty-note">No description given. Maybe ask in the comments below!</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="comments-box">
 {# dummy comments here. Remove this when wiring up #}
 {% set comments = [{"user": "dummyuser1", "text":"Does it have the initials
 RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
