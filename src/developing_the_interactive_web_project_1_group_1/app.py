@@ -170,6 +170,11 @@ def my_posts():
     posts = database.get_posts_for_user(session['user_id'])
     return render_template('my_posts.html', posts=posts)
 
+@app.route('/account')
+@login_required
+def account():
+    return render_template('account.html')
+
 @app.route('/posts/<int:post_id>', methods=['GET'])
 #no login required
 def view_post(post_id):
