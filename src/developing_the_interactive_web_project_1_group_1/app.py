@@ -84,7 +84,9 @@ def index():
     limit = max(1, min(limit, 200))
     ranked_photo_ids = None
     if search:
+        print("YO")
         query_vec = embed_text(search)
+        print("YOYOYOYOYo")
         imgs = database.get_all_image_embeddings()
         print(imgs)
         if imgs:
