@@ -418,7 +418,8 @@ main {
 
 .view-post-left,
 .location-map,
-.description {
+.description,
+.comments-box {
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 23px;
@@ -476,7 +477,8 @@ main {
 }
 
 .location-map h2,
-.description h2 {
+.description h2,
+.comments-box h2 {
   margin-bottom: 0.75rem;
   font-size: 1.15rem;
 }
@@ -538,6 +540,19 @@ main {
   overflow-wrap: anywhere;
 }
 
+/* shown when a post has no description */
+.empty-note {
+  color: #888;
+}
+
+/* bigger maroon heading with a line under it to set it apart from the comments (The heading Comments) */
+.comments-box h2 {
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--maroon);
+  font-size: 1.5rem;
+}
+
 .comment-form {
   display: flex;
   gap: 0.5rem;
@@ -582,7 +597,8 @@ main {
 
   .view-post-left,
   .location-map,
-  .description {
+  .description,
+  .comments-box {
     padding: 16px;
   }
 

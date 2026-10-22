@@ -37,7 +37,11 @@
 
   <div class="description">
     <h2>Description</h2>
+    {% if post.description %}
     <p>{{ post.description }}</p>
+    {% else %}
+    <p class="empty-note">No description given. Maybe ask in the comments below!</p>
+    {% endif %}
   </div>
 </div>
 
