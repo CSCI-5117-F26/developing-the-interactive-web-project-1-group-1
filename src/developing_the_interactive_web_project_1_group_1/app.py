@@ -97,6 +97,7 @@ def index():
 
     # Get one extra post to know if there are more to load
     posts = database.get_posts(search, location_id, item_id, limit + 1, ranked_photo_ids= ranked_photo_ids)
+    print("I got past db", posts)
     has_more = len(posts) > limit
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
