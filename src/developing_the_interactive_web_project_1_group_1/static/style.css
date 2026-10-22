@@ -417,7 +417,8 @@ main {
 }
 
 .view-post-left,
-.location-map {
+.location-map,
+.description {
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 23px;
@@ -430,7 +431,7 @@ main {
 }
 
 .post-meta {
-  margin: 0.25rem 0 1.25rem;
+  margin: 0.25rem 0 0.75rem;
   color: #666;
   font-size: 0.95rem;
 }
@@ -450,14 +451,15 @@ main {
   gap: 1.25rem;
 }
 
-/* on this page the tags sit in a row instead of stacked on a card */
-.view-post-right .tags {
+/* on this page the tags sit in a row above the photo instead of on a card */
+.view-post-left .tags {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 1.25rem;
 }
 
-.view-post-right .tags li {
+.view-post-left .tags li {
   padding: 0.3rem 0.8rem;
   border-color: var(--border);
   border-radius: 999px;
@@ -473,7 +475,8 @@ main {
   border-top: 4px solid var(--maroon);
 }
 
-.location-map h2 {
+.location-map h2,
+.description h2 {
   margin-bottom: 0.75rem;
   font-size: 1.15rem;
 }
@@ -503,13 +506,36 @@ main {
   text-align: center;
 }
 
+/* edit/delete sit under the photo, on the right */
 .owner-panel {
   display: flex;
+  justify-content: flex-end;
   gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.owner-panel form {
+  margin: 0;
+}
+
+.owner-panel button {
+  border-color: #b00020;
+  color: #b00020;
+}
+
+.owner-panel button:hover {
+  background: #b00020;
+  color: var(--white);
 }
 
 .description {
   grid-column: 1 / -1;
+}
+
+.description p {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 
 .comment-form {
@@ -555,7 +581,8 @@ main {
   }
 
   .view-post-left,
-  .location-map {
+  .location-map,
+  .description {
     padding: 16px;
   }
 

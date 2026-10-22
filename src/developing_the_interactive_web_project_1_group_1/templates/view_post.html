@@ -7,23 +7,11 @@
   <div class="view-post-left">
     <h1>{{ post.title }}</h1>
     <p class="post-meta">Posted by {{ user.display_name }}, {{ post.created_at|time_ago }}</p>
-    <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
-  </div>
-
-  <div class="view-post-right">
     <ul class="tags">
       <li class="location"><span>{{ building.building_name }}</span></li>
       <li class="type"><span>{{ item_type.item_name }}</span></li>
     </ul>
-
-    <div class="location-map">
-      <h2>Where to pick it up</h2>
-      <h3>Dummy location, front desk, 1st floor</h3>
-      <div class="hours">Dummy hours, M-F, 8:00am - 5:00pm</div>
-      <div class="map">
-        [Map should go here. Tech share coming on this]
-      </div>
-    </div>
+    <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
 
     {% if is_users_post %}
     <div class="owner-panel">
@@ -34,6 +22,17 @@
       </form>
     </div>
     {% endif %}
+  </div>
+
+  <div class="view-post-right">
+    <div class="location-map">
+      <h2>Where to pick it up</h2>
+      <h3>Dummy location, front desk, 1st floor</h3>
+      <div class="hours">Dummy hours, M-F, 8:00am - 5:00pm</div>
+      <div class="map">
+        [Map should go here. Tech share coming on this]
+      </div>
+    </div>
   </div>
 
   <div class="description">
