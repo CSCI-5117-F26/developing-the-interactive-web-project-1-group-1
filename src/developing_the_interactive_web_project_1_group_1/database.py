@@ -118,13 +118,15 @@ def get_posts_for_user(user_id):
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                """SELECT posts.post_id, posts.photo_id, posts.title, tag_building.building_name,
+                """SELECT posts.post_id, posts.photo_id, posts.title, posts.description, posts.created_at,
+                          tag_building.building_name, tag_itemtype.item_name,
                           COUNT(comments.comment_id) AS comment_count
                    FROM posts
                    JOIN tag_building ON posts.tag_location = tag_building.location_id
+                   JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
                    LEFT JOIN comments ON comments.post_id = posts.post_id
                    WHERE posts.user_id = %s
-                   GROUP BY posts.post_id, tag_building.building_name
+                   GROUP BY posts.post_id, tag_building.building_name, tag_itemtype.item_name
                    ORDER BY posts.created_at DESC""",
                 (user_id,),
             )
