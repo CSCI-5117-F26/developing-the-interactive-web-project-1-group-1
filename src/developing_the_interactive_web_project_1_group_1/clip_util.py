@@ -4,6 +4,7 @@ import torch
 from PIL import Image
 from pillow_heif import register_heif_opener
 import time
+import os
 register_heif_opener()
 
 device = "cpu" 
@@ -11,8 +12,9 @@ print("Using:", device)
 
 model_name = "ViT-B/32"
 print("loading mdoel ")
-
-model, preprocess = clip.load(model_name, device=device)
+cache_dir = "./.cache/torch"
+os.makedirs(cache_dir, exist_ok=True)
+model, preprocess = clip.load(model_name, device=device, download_root=cache_dir)
 print("loaded mdoel ")
 
 model.eval()
