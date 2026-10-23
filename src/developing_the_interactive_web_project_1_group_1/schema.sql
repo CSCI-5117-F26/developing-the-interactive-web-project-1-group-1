@@ -18,7 +18,10 @@ image_data BYTEA NOT NULL
 /*Created these tables so we can add building and item types for selection as we need */
 CREATE TABLE tag_building(
     location_id SERIAL PRIMARY KEY,
-    building_name VARCHAR(100) NOT NULL UNIQUE
+    building_name VARCHAR(100) NOT NULL UNIQUE,
+    address VARCHAR(255),
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
 );
 CREATE TABLE tag_itemtype(
     item_id SERIAL PRIMARY KEY,

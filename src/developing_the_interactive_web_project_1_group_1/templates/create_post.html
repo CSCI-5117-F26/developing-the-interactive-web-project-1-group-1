@@ -42,7 +42,7 @@
       <select id="building" name="building" required>
         <option value="">Choose building...</option>
         {% for b in buildings %}
-        <option value="{{ b.location_id }}"
+        <option value="{{ b.location_id }}" data-address="{{ b.address or '' }}"
           {% if form and form.building == b.location_id|string %}selected{% endif %}>{{ b.building_name }}</option>
         {% endfor %}
       </select>
@@ -66,7 +66,7 @@
 
     <div>
       <h2>Drop off at Lost and Found</h2>
-      <p>The Lost &amp; Found for [selected building] is at [location].</p>
+      <p id="drop-off">Choose a lost and found location.</p>
     </div>
 
     {% if post %}
@@ -78,4 +78,21 @@
     {% endif %}
   </form>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+  var buildingSelect = document.getElementById('building');
+
+  function showDropOff() {
+    var option = buildingSelect.options[buildingSelect.selectedIndex];
+    var text = 'Choose a lost and found location.';
+    if (option.value) {
+      text = 'The Lost & Found for ' + option.text + ' is at ' + option.dataset.address + '.';
+    }
+    document.getElementById('drop-off').textContent = text;
+  }
+
+  buildingSelect.addEventListener('change', showDropOff);
+  showDropOff();
+</script>
 {% endblock %}

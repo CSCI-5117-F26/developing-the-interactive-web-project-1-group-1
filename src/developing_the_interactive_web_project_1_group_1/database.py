@@ -5,23 +5,16 @@ import os
 import atexit
 import dotenv
 
+pool = None
+POST_EXPIRY = "1 month"
+
 #copied exsample code from kluver
 dotenv.load_dotenv()
 pool = ConnectionPool(os.environ["DATABASE_URL"], open=False, min_size=1, max_size=3, kwargs={"row_factory": dict_row})
 atexit.register(pool.close)
-# is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
-# if not is_gunicorn:
-#     pool.open()
+
 #worry about context managers later, when we actually need to work with data... but use %s
 #well later is now, lucky me :)
-
-#teest 
-print("connecting")
-with psycopg.connect(os.environ["DATABASE_URL"],connect_timeout=10, row_factory=dict_row) as conn:
-    print("connected")
-    with conn.cursor() as cur:
-        cur.execute("SELECT NOW()")
-        print(cur.fetchone(), flush=True)
 
 def get_buildings():
     with pool.connection() as conn:
@@ -32,7 +25,7 @@ def get_buildings():
 def get_item_types():
     with pool.connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM tag_itemtype ORDER BY item_name")
+            cur.execute("SELECT * FROM tag_itemtype ORDER BY item_id")
             return cur.fetchall()
 
 def create_post(user_id, title, description, location_id, item_id, image_name, image_data, image_embedding=None):
@@ -77,6 +70,27 @@ def get_user(user_id):
             cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
             return cur.fetchone()
 
+def get_all_users():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM users ORDER BY user_id")
+            return cur.fetchall()
+
+def display_name_taken(display_name):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT user_id FROM users WHERE display_name = %s", (display_name,))
+            return cur.fetchone() is not None
+
+def update_display_name(user_id, display_name):
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE users SET display_name = %s WHERE user_id = %s",
+                        (display_name, user_id))
+
 def get_image(photo_id):
     with pool.connection() as conn:
         with conn.cursor() as cur:
@@ -120,23 +134,8 @@ def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_pho
                     params.append(ranked_photo_ids)
 
                 with pool.connection() as conn:
-                    print("pool??? ")
                     with conn.cursor() as cur:
-                        print("before q ")
                         cur.execute(
-                            f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
-                                    tag_building.building_name, tag_itemtype.item_name, users.display_name
-                                FROM posts
-                                JOIN tag_building ON posts.tag_location = tag_building.location_id
-                                JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
-                                JOIN users ON posts.user_id = users.user_id
-                                {where}
-                                ORDER BY {order_by}
-                                LIMIT %s""",
-                            params + [limit],
-                        )
-                        print("after q?")
-                        print(
                             f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
                                     tag_building.building_name, tag_itemtype.item_name, users.display_name
                                 FROM posts
@@ -241,13 +240,15 @@ def get_posts_for_user(user_id):
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                """SELECT posts.post_id, posts.photo_id, posts.title, tag_building.building_name,
+                """SELECT posts.post_id, posts.photo_id, posts.title, posts.description, posts.created_at,
+                          tag_building.building_name, tag_itemtype.item_name,
                           COUNT(comments.comment_id) AS comment_count
                    FROM posts
                    JOIN tag_building ON posts.tag_location = tag_building.location_id
+                   JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
                    LEFT JOIN comments ON comments.post_id = posts.post_id
                    WHERE posts.user_id = %s
-                   GROUP BY posts.post_id, tag_building.building_name
+                   GROUP BY posts.post_id, tag_building.building_name, tag_itemtype.item_name
                    ORDER BY posts.created_at DESC""",
                 (user_id,),
             )
@@ -277,3 +278,22 @@ def delete_post(post_id, user_id):
             row = cur.fetchone()
             if row is not None:
                 cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
+
+def delete_expired_posts():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            # TODO: delete associated comments
+
+            # delete posts and return a list of orphaned photos
+            cur.execute(
+                """DELETE FROM posts
+                   WHERE created_at < now() - %s::interval
+                   RETURNING photo_id""",
+                [POST_EXPIRY],
+            )
+
+            # delete orphaned photos 
+            photo_ids = [row['photo_id'] for row in cur.fetchall()]
+            cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
+ 

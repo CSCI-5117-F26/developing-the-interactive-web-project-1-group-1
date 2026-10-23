@@ -2,11 +2,11 @@
   --white: #ffffff;
   --off-white: #fafaf8;
   --black: #1a1a1a;
-  --maroon: #7a0019;
+  --maroon: #6d001f;
   --yellow: #ffcc33;
   --border: #e3e3e3;
   --radius: 8px;
-  --page-width: 1200px;
+  --page-width: 1360px;
 }
 
 * {
@@ -39,7 +39,7 @@ a {
 }
 
 /* buttons + form controls, shared by every page */
-button {
+button, .button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -48,9 +48,10 @@ button {
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
 }
 
-button:hover {
+button:hover, .button:hover {
   background: var(--black);
   color: var(--white);
 }
@@ -99,14 +100,10 @@ textarea {
   gap: 1.5rem;
 }
 
-.logo {
-  padding: 0.35rem 0.9rem;
+.logo img {
+  display: block;
+  height: 50px;
   border-radius: var(--radius);
-  background: var(--maroon);
-  color: var(--yellow);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-decoration: none;
 }
 
 .nav-links {
@@ -125,12 +122,35 @@ textarea {
   color: var(--maroon);
 }
 
-.account-select {
-  border-color: var(--black);
-  border-radius: 999px;
-  padding-left: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+/* account dropdown in the header */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-options {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.account-options a {
+  padding: 0.5rem 1rem;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.account-options a:hover {
+  background: var(--off-white);
 }
 
 /* main content */
@@ -211,42 +231,460 @@ main {
   margin-bottom: 1.5rem;
 }
 
+/* item cards, layout adapted from the "Most Popular" cards in templatemo's Cyborg Gaming template:
+   https://templatemo.com/live/templatemo_579_cyborg_gaming (colors swapped for our own) */
 .item-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 30px;
+  margin-bottom: 1.5rem;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+/* maroon strip on top and shadow so each card stands out more from its neighbours */
+.item-card {
+  height: 100%;
+  padding: 30px 15px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--maroon);
+  border-radius: 23px;
+  background: var(--off-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .item-card img {
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  border-radius: 23px;
 }
 
-/* my posts page */
-.posts-table {
-  width: 100%;
-  border-collapse: collapse;
+.item-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 20px;
 }
 
-.posts-table th,
-.posts-table td {
-  padding: 0.5rem;
+.item-title {
+  flex: 1 1 0;
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.item-title span {
+  display: block;
+  margin-top: 7px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+/* bordered "bubble" tags, from Ray's PR */
+.tags li {
+  padding: 0.2rem 0.5rem;
   border: 1px solid black;
-  text-align: left;
+  border-radius: 0.5rem;
+  background: var(--white);
+}
+
+/* Makes the item card a link without screwing up the styling */
+.item-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tags li::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.tags .location::before {
+  background: var(--maroon);
+}
+
+.tags .type::before {
+  background: var(--yellow);
+}
+
+/* my posts page, list layout adapted from the "Visit One Of Our Countries Now" section in templatemo's WoOx Travel template:
+   https://templatemo.com/live/templatemo_580_woox_travel (colors swapped for our own) */
+.post-list {
+  margin-top: 1.5rem;
+}
+
+/* each post is its own card, maroon strip on the left + shadow like the home feed cards */
+.post-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--maroon);
+  border-radius: 23px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .post-thumb {
-  width: 60px;
+  flex: 0 0 280px;
+  width: 280px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 23px;
+}
+
+.post-content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-content h2 {
+  margin-bottom: 5px;
+  padding-right: 11rem;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.post-building {
+  display: block;
+  color: #afafaf;
+  font-size: 15px;
 }
 
 .post-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   gap: 0.5rem;
 }
 
+/* view post page, cards match the rounded white boxes on the home feed */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--maroon);
+}
+
+.view-post {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 30px;
+  
+  /* stretch so the right column is as tall as the photo card */
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+
+.view-post-left,
+.view-post-right {
+  min-width: 0;
+}
+
+.view-post-left,
+.location-map,
+.description,
+.comments-box {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+.view-post-left h1 {
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.post-meta {
+  margin: 0.25rem 0 0.75rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.view-post-left img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--off-white);
+}
+
+.view-post-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* on this page the tags sit in a row above the photo instead of on a card */
+.view-post-left .tags {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.view-post-left .tags li {
+  padding: 0.3rem 0.8rem;
+  border-color: var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  font-weight: 500;
+}
+
+/* grows to fill the leftover column height so there's no gap under it */
+.location-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-top: 4px solid var(--maroon);
+}
+
+.location-map h2,
+.description h2,
+.comments-box h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.location-map h3 {
+  font-size: 1rem;
+}
+
+.hours {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* plain gray placeholder until the real map is wired up */
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 260px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #e0e0e0;
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* edit/delete sit under the photo, on the right */
+.owner-panel {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.owner-panel form,
+.post-actions form {
+  margin: 0;
+}
+
+/* red delete button, used on view post and my posts */
+.owner-panel button,
+.delete-button {
+  border-color: #b00020;
+  color: #b00020;
+}
+
+.owner-panel button:hover,
+.delete-button:hover {
+  background: #b00020;
+  color: var(--white);
+}
+
+.description {
+  grid-column: 1 / -1;
+}
+
+.description p {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* shown when a post has no description */
+.empty-note {
+  color: #888;
+}
+
+/* bigger maroon heading with a line under it to set it apart from the comments (The heading Comments) */
+.comments-box h2 {
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--maroon);
+  font-size: 1.5rem;
+}
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-content p {
+  margin: 18px 0;
+}
+
+.post-info {
+  display: flex;
+  margin: 18px 0 0;
+  padding: 15px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+  color: #afafaf;
+  font-size: 14px;
+}
+
+.post-info li {
+  flex: 1;
+}
+
+.post-info li:nth-child(2) {
+  text-align: center;
+}
+
+.post-info li:last-child {
+  text-align: right;
+}
+
+/* L and F Locations */
+.map {
+  height: 300px;
+  margin: 1rem 0;
+  z-index: 0;
+}
+
+.locations-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.locations-layout .map {
+  /* Calculates content section height and expands map to fill */
+  height: calc(100vh - 285px);
+  min-height: 400px;
+  margin: 0;
+}
+
+.location-list {
+  /* Calculates content section height and expands map to fill */
+  max-height: calc(100vh - 285px);
+  min-height: 400px;
+  margin: 0;
+  padding: 4px 8px 4px 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.location-card {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.location-list p {
+  margin: 0.1rem 0 0.4rem;
+  font-size: 0.9rem;
+}
+
+.location-list .copy-address,
+.location-list .button {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.location-list .button {
+  margin-left: 0.4rem;
+}
+
+.show-on-map {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.show-on-map:hover {
+  background: none;
+  color: var(--maroon);
+  text-decoration: underline;
+}
+
 @media (max-width: 700px) {
+  .view-post {
+    grid-template-columns: 1fr;
+  }
+
+  .view-post-left,
+  .location-map,
+  .description,
+  .comments-box {
+    padding: 16px;
+  }
+
+  .view-post-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
   .site-header {
     flex-direction: column;
     align-items: flex-start;
@@ -261,5 +699,26 @@ main {
 
   main {
     padding: 1.25rem 1rem;
+  }
+
+  /* stack the my posts rows: photo on top, buttons back in the flow */
+  .post-row {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 16px;
+  }
+
+  .post-thumb {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .post-content h2 {
+    padding-right: 0;
+  }
+
+  .post-actions {
+    position: static;
+    margin-top: 0.75rem;
   }
 }

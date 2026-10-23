@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}L&amp;F Locations{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+{% block main %}
+<h1>Lost &amp; Found locations</h1>
+
+<div class="locations-layout">
+  <ul class="location-list">
+    {% for b in buildings %}
+    {# clicking anywhere on the card moves the map to that building's pin.
+       the name is a button so keyboard users can tab to it #}
+    <li class="location-card" data-location-id="{{ b.location_id }}">
+      <button type="button" class="show-on-map">{{ b.building_name }}</button>
+      <p>{{ b.address or 'Address coming soon.' }}</p>
+      {% if b.address %}
+      <button type="button" class="copy-address" data-address="{{ b.address }}">Copy address</button>
+      {% endif %}
+      <a href="{{ url_for('index', building=b.location_id) }}" class="button">See items found here</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div id="locations-map" class="map"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="{{ url_for('static', filename='locations.js') }}"></script>
+<script>
+  showBuildingsMap('locations-map', {{ buildings|tojson }}, true);
+</script>
+{% endblock %}

@@ -1,6 +1,5 @@
 # import some db package and run setup
 import os
-import random
 import mimetypes
 from datetime import datetime, timezone
 from functools import wraps
@@ -11,6 +10,7 @@ import developing_the_interactive_web_project_1_group_1.database as database
 import numpy as np
 import requests
 
+from developing_the_interactive_web_project_1_group_1 import usernames
 
 load_dotenv()
 
@@ -46,6 +46,12 @@ def embed_text(txt):
     response.raise_for_status()
     embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
     return embedding
+# cleanup_count is a global var and hack to track how many times index() has been
+# called. It is used to call cleanup operations on every Nth call specified by
+# CLEANUP_INTERVAL. This is being done because a more approp. solution of a
+# cron job costs money with Render.
+cleanup_count = 0
+CLEANUP_INTERVAL = 4
 
 def login_required(f):
     @wraps(f)
@@ -94,6 +100,16 @@ def time_ago(when):
 
 @app.route('/')
 def index():
+    # track how many times index is being called for cleanup purposes (see
+    # comments in global var declaration above)
+    global cleanup_count
+    cleanup_count += 1
+    
+    # cleanup expired posts and reset count
+    if cleanup_count % CLEANUP_INTERVAL == 0:
+        database.delete_expired_posts()
+        cleanup_count = 0
+
     search = request.args.get('q', '').strip()
     location_id = request.args.get('building', type=int)
     item_id = request.args.get('item_type', type=int)
@@ -151,7 +167,7 @@ def callback():
         flash(message)
         return auth0_logout(url_for('index', _external=True))
 
-    display_name = f"user{random.randint(1000, 9999)}"
+    display_name = usernames.unique_username()
     user = database.get_or_create_user(userinfo['sub'], display_name)
 
     session['user'] = token
@@ -204,6 +220,30 @@ def my_posts():
     posts = database.get_posts_for_user(session['user_id'])
     return render_template('my_posts.html', posts=posts)
 
+@app.route('/locations')
+def locations():
+    return render_template('locations.html', buildings=database.get_buildings())
+
+@app.route('/posts/<int:post_id>', methods=['GET'])
+#no login required
+def view_post(post_id):
+    post = database.get_post(post_id)
+    if post is None:
+        abort(404)
+
+    user = database.get_user(post['user_id'])
+    is_users_post = session.get('user_id', None) == post['user_id']  
+
+    buildings = database.get_buildings()
+    # find the building that matches the tag_location number associated with our post
+    building = next((i for i in buildings if i.get('location_id') == post['tag_location']), None)
+
+    item_types = database.get_item_types()
+    # find the item_type that matches the tag_item number associated with our post
+    item_type = next((i for i in item_types if i.get('item_id') == post['tag_item']), None)
+
+    return render_template('view_post.html', post=post, user=user, building=building, 
+                           item_type=item_type, is_users_post=is_users_post)
 
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required

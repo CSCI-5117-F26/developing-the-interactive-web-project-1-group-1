@@ -11,15 +11,20 @@ crossorigin="anonymous">
     <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}" />
     <title>{% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
   </head>
   <body>
     <header class="site-header">
       <div class="header-left">
-        <a href="{{ url_for('index') }}" class="logo">LOGO</a>
+        <!-- Logo image (static/logo.png was generated using ChatGPT  -->
+        <a href="{{ url_for('index') }}" class="logo">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Lost and Found home" />
+        </a>
         <nav class="nav-links">
-          <a href="#">Found items</a>
-          <a href="#">L&amp;F locations</a>
+          <a href="{{ url_for('index') }}">Found items</a>
+          <a href="{{ url_for('locations') }}">L&amp;F locations</a>
         </nav>
       </div>
 
@@ -30,12 +35,15 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
 
         {% if session.user %}
           <span>{{ session.display_name }}</span>
-          <a href="{{ url_for('logout') }}">Log out</a>
-          <select name="account" id="account" class="account-select">
-            <option value="">Account</option>
-            <option value="settings">Settings</option>
-            <option value="profile">Profile</option>
-          </select>
+          <details class="account-menu">
+            <summary class="button">Account &#9662;</summary>
+            <nav class="account-options">
+              <a href="{{ url_for('my_posts') }}">My posts</a>
+              {# account page not built yet #}
+              <a href="#">Account</a>
+              <a href="{{ url_for('logout') }}">Log out</a>
+            </nav>
+          </details>
         {% else %}
           <form action="{{ url_for('login') }}" method="get">
             <button>Log in</button>
