@@ -183,7 +183,6 @@ def delete_post(post_id, user_id):
                 cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
 
 def delete_expired_posts():
-    print(f"delete_expired_posts() called")
     pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
@@ -199,6 +198,5 @@ def delete_expired_posts():
 
             # delete orphaned photos 
             photo_ids = [row['photo_id'] for row in cur.fetchall()]
-            print(f"photo_ids: {photo_ids}")
             cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
  
