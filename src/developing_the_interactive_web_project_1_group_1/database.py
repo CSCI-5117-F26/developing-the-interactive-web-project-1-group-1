@@ -4,6 +4,8 @@ import os
 import atexit
 
 pool = None
+POST_EXPIRY = "1 month"
+
 #copied exsample code from kluver
 def setup():
     global pool
@@ -179,3 +181,22 @@ def delete_post(post_id, user_id):
             row = cur.fetchone()
             if row is not None:
                 cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
+
+def delete_expired_posts():
+    pool.open()
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            # TODO: delete associated comments
+
+            # delete posts and return a list of orphaned photos
+            cur.execute(
+                """DELETE FROM posts
+                   WHERE created_at < now() - %s::interval
+                   RETURNING photo_id""",
+                [POST_EXPIRY],
+            )
+
+            # delete orphaned photos 
+            photo_ids = [row['photo_id'] for row in cur.fetchall()]
+            cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
+ 

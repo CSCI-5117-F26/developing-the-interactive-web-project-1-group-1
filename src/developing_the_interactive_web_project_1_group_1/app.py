@@ -26,6 +26,13 @@ oauth.register(
     server_metadata_url=f'https://{os.environ["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
 )
 
+# cleanup_count is a global var and hack to track how many times index() has been
+# called. It is used to call cleanup operations on every Nth call specified by
+# CLEANUP_INTERVAL. This is being done because a more approp. solution of a
+# cron job costs money with Render.
+cleanup_count = 0
+CLEANUP_INTERVAL = 4
+
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -73,6 +80,16 @@ def time_ago(when):
 
 @app.route('/')
 def index():
+    # track how many times index is being called for cleanup purposes (see
+    # comments in global var declaration above)
+    global cleanup_count
+    cleanup_count += 1
+    
+    # cleanup expired posts and reset count
+    if cleanup_count % CLEANUP_INTERVAL == 0:
+        database.delete_expired_posts()
+        cleanup_count = 0
+
     search = request.args.get('q', '').strip()
     location_id = request.args.get('building', type=int)
     item_id = request.args.get('item_type', type=int)
