@@ -85,8 +85,6 @@ def index():
     global cleanup_count
     cleanup_count += 1
     
-    print(f"cleanup count is {cleanup_count}")
-
     # cleanup expired posts and reset count
     if cleanup_count % CLEANUP_INTERVAL == 0:
         database.delete_expired_posts()
