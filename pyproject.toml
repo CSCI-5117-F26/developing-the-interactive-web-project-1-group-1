@@ -20,6 +20,8 @@ dependencies = [
     "python-dotenv>=1.2.4",
     "requests>=2.34.2",
     "pillow-heif>=1.8.1",
+    "mobileclip>=0.0.1",
+    "open-clip-torch>=3.3.0",
 ]
 
 [project.scripts]

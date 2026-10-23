@@ -89,63 +89,147 @@ def get_all_image_embeddings():
             cur.execute("SELECT photo_id, embedding FROM image_embeddings")
             return cur.fetchall()
 
-def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_photo_ids=None):
-    conditions = []
-    params = []
-    if search and ranked_photo_ids is None:
-        conditions.append("(posts.title ILIKE %s OR posts.description ILIKE %s)")
-        params += [f"%{search}%", f"%{search}%"]
-    if location_id:
-        conditions.append("posts.tag_location = %s")
-        params.append(location_id)
-    if item_id:
-        conditions.append("posts.tag_item = %s")
-        params.append(item_id)
-    if ranked_photo_ids is not None:
-        if not ranked_photo_ids:
-            return []
-        conditions.append("posts.photo_id = ANY(%s)")
-        params.append(ranked_photo_ids)
-    where = "WHERE " + " AND ".join(conditions) if conditions else ""
-
-    order_by = (
-        "array_position(%s::int[], posts.photo_id)"
-        if ranked_photo_ids is not None
-        else "posts.created_at DESC"
-    )
-    if ranked_photo_ids is not None:
-        params.append(ranked_photo_ids)
-
+def get_posts(search=None, location_id=None, item_id=None, limit=20 , ranked_photo_ids=None, image_search = False):
     with pool.connection() as conn:
-        print("pool??? ")
         with conn.cursor() as cur:
-            print("before q ")
-            cur.execute(
-                f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
-                           tag_building.building_name, tag_itemtype.item_name, users.display_name
-                    FROM posts
-                    JOIN tag_building ON posts.tag_location = tag_building.location_id
-                    JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
-                    JOIN users ON posts.user_id = users.user_id
-                    {where}
-                    ORDER BY {order_by}
-                    LIMIT %s""",
-                params + [limit],
-            )
-            print("after q?")
-            print(
-                f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
-                           tag_building.building_name, tag_itemtype.item_name, users.display_name
-                    FROM posts
-                    JOIN tag_building ON posts.tag_location = tag_building.location_id
-                    JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
-                    JOIN users ON posts.user_id = users.user_id
-                    {where}
-                    ORDER BY {order_by}
-                    LIMIT %s""",
-                params + [limit],
-            )
-            return cur.fetchall()
+            if image_search:
+                conditions = []
+                params = []
+                if search and ranked_photo_ids is None:
+                    conditions.append("(posts.title ILIKE %s OR posts.description ILIKE %s)")
+                    params += [f"%{search}%", f"%{search}%"]
+                if location_id:
+                    conditions.append("posts.tag_location = %s")
+                    params.append(location_id)
+                if item_id:
+                    conditions.append("posts.tag_item = %s")
+                    params.append(item_id)
+                if ranked_photo_ids is not None:
+                    if not ranked_photo_ids:
+                        return []
+                    conditions.append("posts.photo_id = ANY(%s)")
+                    params.append(ranked_photo_ids)
+                where = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+                order_by = (
+                    "array_position(%s::int[], posts.photo_id)"
+                    if ranked_photo_ids is not None
+                    else "posts.created_at DESC"
+                )
+                if ranked_photo_ids is not None:
+                    params.append(ranked_photo_ids)
+
+                with pool.connection() as conn:
+                    print("pool??? ")
+                    with conn.cursor() as cur:
+                        print("before q ")
+                        cur.execute(
+                            f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                                    tag_building.building_name, tag_itemtype.item_name, users.display_name
+                                FROM posts
+                                JOIN tag_building ON posts.tag_location = tag_building.location_id
+                                JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                                JOIN users ON posts.user_id = users.user_id
+                                {where}
+                                ORDER BY {order_by}
+                                LIMIT %s""",
+                            params + [limit],
+                        )
+                        print("after q?")
+                        print(
+                            f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                                    tag_building.building_name, tag_itemtype.item_name, users.display_name
+                                FROM posts
+                                JOIN tag_building ON posts.tag_location = tag_building.location_id
+                                JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                                JOIN users ON posts.user_id = users.user_id
+                                {where}
+                                ORDER BY {order_by}
+                                LIMIT %s""",
+                            params + [limit],
+                        )
+                        return cur.fetchall()
+            fuzzy_ids = []
+            if search and search.strip():
+                conditions=["(posts.title %% %s OR posts.description %% %s OR posts.description ILIKE %s OR posts.title ILIKE %s)"]
+                params = [search,search,f"%{search}%", f"%{search}%"]
+                if location_id:
+                    conditions.append("posts.tag_location = %s")
+                    params.append(location_id)
+                if item_id:
+                        conditions.append("posts.tag_item = %s")
+                        params.append(item_id)
+                where = (" AND ".join(conditions) if conditions else "")
+
+                cur.execute(
+                                f"""SELECT posts.photo_id
+                                    FROM posts
+                                    WHERE 
+                                    {where}
+                                    ORDER BY GREATEST(
+                                        similarity(posts.title, %s),
+                                        similarity(COALESCE(posts.description, ''), %s)
+                                    ) DESC, posts.created_at DESC
+                                    LIMIT %s""",
+                                params + [search,search,100],
+                            )
+                fuzzy_ids = [row["photo_id"] for row in cur.fetchall()]
+            if search:
+                scores = {}
+                for ranked_list in (fuzzy_ids, ranked_photo_ids or []):
+                    for rank, photo_id in enumerate(ranked_list, start=1):
+                        scores[photo_id] = (scores.get(photo_id,0)+1/(60+rank))
+                ranked_ids = sorted(scores, key=scores.get, reverse=True)
+                if not ranked_ids: 
+                    return []
+                conditions = ["posts.photo_id = ANY(%s)"]
+                params = [ranked_ids]
+                    
+                if location_id:
+                    conditions.append("posts.tag_location = %s")
+                    params.append(location_id)
+                if item_id:
+                    conditions.append("posts.tag_item = %s")
+                    params.append(item_id)
+                where = ("WHERE " + " AND ".join(conditions) if conditions else "")
+                cur.execute(
+                            f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                                        tag_building.building_name, tag_itemtype.item_name, users.display_name
+                                FROM posts
+                                JOIN tag_building ON posts.tag_location = tag_building.location_id
+                                JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                                JOIN users ON posts.user_id = users.user_id
+                                {where}
+                                ORDER BY array_position(%s::int[], posts.photo_id)
+                                LIMIT %s""",
+                            params + [ranked_ids,limit],
+                            )
+                return cur.fetchall()
+                
+            else:    
+                conditions = []
+                params = []
+                if location_id:
+                    conditions.append("posts.tag_location = %s")
+                    params.append(location_id)
+                if item_id:
+                    conditions.append("posts.tag_item = %s")
+                    params.append(item_id)
+                where = ("WHERE " + " AND ".join(conditions) if conditions else "")
+        
+                cur.execute(
+                    f"""SELECT posts.post_id, posts.photo_id, posts.title, posts.created_at,
+                            tag_building.building_name, tag_itemtype.item_name, users.display_name
+                        FROM posts
+                        JOIN tag_building ON posts.tag_location = tag_building.location_id
+                        JOIN tag_itemtype ON posts.tag_item = tag_itemtype.item_id
+                        JOIN users ON posts.user_id = users.user_id
+                        {where}
+                        ORDER BY posts.created_at DESC
+                        LIMIT %s""",
+                    params + [limit],
+                )
+                return cur.fetchall()
 
 def get_post(post_id):
     with pool.connection() as conn:

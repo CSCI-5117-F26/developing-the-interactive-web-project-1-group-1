@@ -55,3 +55,8 @@ CREATE TABLE image_embeddings(
     photo_id INT NOT NULL REFERENCES images(photo_id) ON DELETE CASCADE,
     embedding BYTEA NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS description_idx
+ON posts USING GIN (description gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS title_idx
+ON posts USING GIN (title gin_trgm_ops);

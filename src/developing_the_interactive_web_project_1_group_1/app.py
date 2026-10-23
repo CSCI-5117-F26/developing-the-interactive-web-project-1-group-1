@@ -8,8 +8,8 @@ from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 import developing_the_interactive_web_project_1_group_1.database as database
-from developing_the_interactive_web_project_1_group_1.clip_util import embed_img, embed_text
 import numpy as np
+import requests
 
 
 load_dotenv()
@@ -29,6 +29,23 @@ oauth.register(
     client_kwargs={"scope": "openid profile email"},
     server_metadata_url=f'https://{os.environ["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
 )
+
+clip_api_url = os.environ["CLIP_API_URL"]
+def embed_img(photo):
+    
+    response = requests.post(f"{clip_api_url}/embed-img", 
+                                files={
+                                    "file": (photo.filename or "image", photo.stream, photo.mimetype or "application/octet-stream",)},
+                                    timeout=60)
+    response.raise_for_status()
+    embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
+    return embedding
+    
+def embed_text(txt):
+    response = requests.post(f"{clip_api_url}/embed-text", json={"text": txt}, timeout= 60)
+    response.raise_for_status()
+    embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
+    return embedding
 
 def login_required(f):
     @wraps(f)
@@ -84,15 +101,12 @@ def index():
     limit = max(1, min(limit, 200))
     ranked_photo_ids = None
     if search:
-        print("YO")
         query_vec = embed_text(search)
-        print("YOYOYOYOYo")
         imgs = database.get_all_image_embeddings()
-        print(imgs)
         if imgs:
             img_matrix = np.stack([np.frombuffer(img['embedding'], dtype=np.float32) for img in imgs])
             scores = img_matrix @ query_vec
-            idxs = np.argsort(-scores)
+            idxs = np.argsort(-scores)[:100]
             ranked_photo_ids = [imgs[i]["photo_id"] for i in idxs]
         else:
             ranked_photo_ids = []
@@ -103,7 +117,7 @@ def index():
     has_more = len(posts) > limit
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
-                           buildings=database.get_buildings(), item_types=database.get_item_types())
+                           buildings=database.get_buildings(), item_types=database.get_item_types(), image_search = False)
 
 @app.route('/login')
 def login():
@@ -274,7 +288,7 @@ def search_by_image():
 
 
     # Get one extra post to know if there are more to load
-    posts = database.get_posts(location_id=location_id, item_id=item_id, limit=limit + 1, ranked_photo_ids= ranked_photo_ids)
+    posts = database.get_posts(location_id=location_id, item_id=item_id, limit=limit + 1, ranked_photo_ids= ranked_photo_ids , image_search = True)
     has_more = len(posts) > limit
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
