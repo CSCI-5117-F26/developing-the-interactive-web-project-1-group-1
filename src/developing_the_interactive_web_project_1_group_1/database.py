@@ -197,9 +197,8 @@ def delete_expired_posts():
                 [POST_EXPIRY],
             )
 
-            fetches = cur.fetchall()
-
             # delete orphaned photos 
             photo_ids = [row['photo_id'] for row in cur.fetchall()]
+            print(f"photo_ids: {photo_ids}")
             cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
  
