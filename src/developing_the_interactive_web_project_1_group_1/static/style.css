@@ -39,7 +39,7 @@ a {
 }
 
 /* buttons + form controls, shared by every page */
-button, .button {
+.pure-button, .button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -51,19 +51,19 @@ button, .button {
   text-decoration: none;
 }
 
-button:hover, .button:hover {
+.pure-button:hover, .button:hover {
   background: var(--black);
   color: var(--white);
 }
 
 /* for the standout button like "I found something" */
-.btn-accent {
+.button-primary {
   border-color: var(--maroon);
   background: var(--maroon);
   color: var(--yellow);
 }
 
-.btn-accent:hover {
+.button-primary:hover {
   border-color: var(--yellow);
   background: var(--yellow);
   color: var(--maroon);
