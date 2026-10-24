@@ -10,6 +10,7 @@ import developing_the_interactive_web_project_1_group_1.database as database
 import numpy as np
 import requests
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 
 from developing_the_interactive_web_project_1_group_1 import usernames
 
@@ -350,7 +351,6 @@ def search_by_image():
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
                             buildings=database.get_buildings(), item_types=database.get_item_types())
-
 
     
 if __name__ == '__main__':
