@@ -52,3 +52,14 @@ CREATE TABLE comments(
 );
 /* will need to add modifiy time stamptz later for posts*/
 /*guess timestamptz is the best since it has a defined timezone of UTC*/
+
+CREATE TABLE image_embeddings(
+    embedding_id SERIAL PRIMARY KEY,
+    photo_id INT NOT NULL REFERENCES images(photo_id) ON DELETE CASCADE,
+    embedding BYTEA NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS description_idx
+ON posts USING GIN (description gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS title_idx
+ON posts USING GIN (title gin_trgm_ops);
