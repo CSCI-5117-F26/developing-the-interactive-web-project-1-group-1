@@ -58,7 +58,7 @@
   <div class="comment">
     <strong>{{ comment.display_name }}</strong>
     <small> {{ comment.created_at|time_ago }}</small>
-    <p>{{ comment.text }}</p>
+    <p>{{ comment.comment_info }}</p>
   </div>
   {% else %}
   <p class="no-comments">No comments on post yet!</p>

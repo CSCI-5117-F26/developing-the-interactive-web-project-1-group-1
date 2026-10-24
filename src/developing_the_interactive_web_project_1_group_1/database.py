@@ -299,7 +299,19 @@ def delete_expired_posts():
 def get_comments_for_post(post_id):
     with pool.connection() as conn:
             with conn.cursor() as cur:
-                pass
+                cur.execute("""
+                    SELECT c.comment_id, c.comment_info, c.created_at, c.user_id, u.display_name
+                    FROM comments c
+                    JOIN users u ON u.user_id = c.user_id
+                    WHERE c.post_id = %s
+                    ORDER BY c.created_at ASC
+                """, (post_id,))
+                return cur.fetchall()
 
-def add_comment(post_id, user_id, comment_info):
-    pass
+def create_comment(post_id, user_id, comment_info):
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO comments (post_id, user_id, comment_info)
+                VALUES (%s,%s,%s)
+            """, (post_id,user_id,comment_info))

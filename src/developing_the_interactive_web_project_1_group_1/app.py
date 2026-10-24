@@ -256,7 +256,7 @@ def add_comment(post_id):
     comment_info = request.form.get('comment_info', '').strip()
     if not comment_info or len(comment_info) > 1000:
         return redirect(url_for('view_post', post_id=post_id))
-    database.add_comment(post_id, session['user_id'], comment_info)
+    database.create_comment(post_id, session['user_id'], comment_info)
     return redirect(url_for('view_post', post_id=post_id))
 
     
