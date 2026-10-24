@@ -102,5 +102,35 @@
 
   buildingSelect.addEventListener('change', showDropOff);
   showDropOff();
+
+  var drag_drop = document.getElementById('drag_and_drop');
+  var photoInput = document.getElementById('photo');
+  var photoPreview = document.getElementById('photo-preview');
+  
+  function showPreview(file){
+    photoPreview.src = URL.createObjectURL(file);
+  }
+
+  photoInput.addEventListener('change', function(){
+    if(photoInput.files[0]) showPreview(photoInput.files[0]);
+  });
+
+  drag_drop.addEventListener('dragover', function(e){
+    e.preventDefault()
+  })
+
+  drag_drop.addEventListener('drop', function(e){
+    e.preventDefault()
+    var file = e.dataTransfer.files[0];
+    if(!file || !file.type.startsWith('image/')) return;
+
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    photoInput.files = dt.files;
+    showPreview(file);
+  });
+
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) { e.preventDefault(); });
 </script>
 {% endblock %}
