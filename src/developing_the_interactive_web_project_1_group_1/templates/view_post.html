@@ -53,21 +53,27 @@
 </div>
 
 <div class="comments-box">
-{# dummy comments here. Remove this when wiring up #}
-{% set comments = [{"user": "dummyuser1", "text":"Does it have the initials
-RSA on the bottom?"}, {"user": "dummyuser2", "text": "Yep!"}, {"user":
-"dummyuser1", "text": "Cool, that's mine! Thank you for posting!"}] %}
   <h2>Comments</h2>
   {% for comment in comments %}
   <div class="comment">
-    <strong>{{ comment.user }}</strong>
+    <strong>{{ comment.display_name }}</strong>
+    <small> {{ comment.created_at|time_ago }}</small>
     <p>{{ comment.text }}</p>
   </div>
+  {% else %}
+  <p class="no-comments">No comments on post yet!</p>
   {% endfor %}
-  <form action="#" method="post" class="comment-form">
-    <input type="text" placeholder="Add a comment..." required>
-    <button>Post comment</button>
+
+  {% if is_logged_in %}
+  <form action="{{ url_for('add_comment', post_id=post.post_id) }}" method="post" class="comment-form">
+    <input type="text" name="comment_info" placeholder="Add a comment..." maxlength="1000" required>
+    <button type="submit">Post comment</button>
   </form>
+  {% else %}
+  <form action="{{ url_for('login') }}" method="get">
+            <button>Login to leave a comment</button>
+  </form>
+  {% endif %}
 </div>
 {% endblock %}
 {% block scripts %}

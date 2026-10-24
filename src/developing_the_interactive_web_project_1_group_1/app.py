@@ -233,6 +233,7 @@ def view_post(post_id):
 
     user = database.get_user(post['user_id'])
     is_users_post = session.get('user_id', None) == post['user_id']  
+    is_logged_in = 'user_id' in session
 
     buildings = database.get_buildings()
     # find the building that matches the tag_location number associated with our post
@@ -243,7 +244,7 @@ def view_post(post_id):
     item_type = next((i for i in item_types if i.get('item_id') == post['tag_item']), None)
 
     return render_template('view_post.html', post=post, user=user, building=building, 
-                           item_type=item_type, is_users_post=is_users_post)
+                           item_type=item_type, is_users_post=is_users_post, is_logged_in=is_logged_in)
 
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
