@@ -283,6 +283,7 @@ def delete_expired_posts():
     with pool.connection() as conn:
         with conn.cursor() as cur:
             # TODO: delete associated comments
+            #no need, comments are ON DELETE CASCADE, so they will be deleted regardless
 
             # delete posts and return a list of orphaned photos
             cur.execute(

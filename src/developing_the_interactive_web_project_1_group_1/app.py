@@ -9,6 +9,7 @@ from flask import Flask, request, render_template, redirect, session, url_for, a
 import developing_the_interactive_web_project_1_group_1.database as database
 import numpy as np
 import requests
+from flask_wtf.csrf import CSRFProtect
 
 from developing_the_interactive_web_project_1_group_1 import usernames
 
@@ -16,6 +17,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
+csrf = CSRFProtect(app)
 
 # 10MB limit
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
