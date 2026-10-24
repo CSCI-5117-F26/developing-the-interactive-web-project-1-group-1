@@ -280,7 +280,6 @@ def delete_post(post_id, user_id):
                 cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
 
 def delete_expired_posts():
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             # TODO: delete associated comments
@@ -297,3 +296,10 @@ def delete_expired_posts():
             photo_ids = [row['photo_id'] for row in cur.fetchall()]
             cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
  
+def get_comments_for_post(post_id):
+    with pool.connection() as conn:
+            with conn.cursor() as cur:
+                pass
+
+def add_comment(post_id, user_id, comment_info):
+    pass
