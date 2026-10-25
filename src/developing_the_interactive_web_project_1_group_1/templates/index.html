@@ -3,7 +3,7 @@
 {% block main %}
 <h1>Recently found on campus</h1>
 <p>Search by keyword, or filter by building and item type</p>
-<form action="{{ url_for('index') }}" method="get" role="search" class="search-form">
+<form action="{{ url_for('index') }}" method="get" role="search" class="pure-form search-form">
 <input type="search" id="q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
   <option value="">Building: Any</option>

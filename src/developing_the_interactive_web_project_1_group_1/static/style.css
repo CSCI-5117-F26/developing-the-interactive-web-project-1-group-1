@@ -69,17 +69,6 @@ a {
   color: var(--maroon);
 }
 
-input,
-select,
-textarea {
-  padding: 0.55rem 0.8rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--white);
-  color: var(--black);
-  font: inherit;
-}
-
 /* header */
 .site-header {
   display: flex;
@@ -179,18 +168,6 @@ main {
 
 .field {
   margin-bottom: 1rem;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-}
-
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
 }
 
 .field img {
