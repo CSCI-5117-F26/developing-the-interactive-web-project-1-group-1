@@ -15,39 +15,40 @@
   {% endif %}
 
   {% if post %}
-  <form class="pure-form" action="{{ url_for('edit_post', post_id=post.post_id) }}" method="post" enctype="multipart/form-data">
+<<<<<<< HEAD
+  <form class="pure-form pure-form-stacked" action="{{ url_for('edit_post', post_id=post.post_id) }}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="field">
       <label for="photo">Photo</label>
       <label id="drag_and_drop" class="drag_and_drop">
         <img id="photo-preview" src="{{ url_for('image', photo_id=post.photo_id) }}" alt="current photo of {{ post.title }}">
         <span>Drag and drop a new image or click to upload </span>
-        <input type="file" id="photo" name="photo" accept="image/*">
+        <input type="file" class="pure-input-1" id="photo" name="photo" accept="image/*">
       </label>
       <p>Leave this empty to keep the current photo.</p>
     </div>
   {% else %}
-  <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+  <form class="pure-form pure-form-stacked" action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="field">
       <label for="photo">Photo</label>
       <label id="drag_and_drop" class="drag_and_drop">
         <img id="photo-preview" src="https://picsum.photos/400/300" alt="">
         <span>Drag and drop a new image here! or click to upload </span>
-        <input type="file" id="photo" name="photo" accept="image/*" required>
+        <input type="file" class="pure-input-1" id="photo" name="photo" accept="image/*" required>
       </label>
     </div>
   {% endif %}
 
     <div class="field">
       <label for="title">Title</label>
-      <input type="text" id="title" name="title" placeholder="e.g. Black AirPods case"
+      <input type="text" class="pure-input-1" id="title" name="title" placeholder="e.g. Black AirPods case"
              value="{{ form.title if form }}" required>
     </div>
 
     <div class="field">
       <label for="building">Lost &amp; Found location</label>
-      <select id="building" name="building" required>
+      <select class="pure-input-1" id="building" name="building" required>
         <option value="">Choose building...</option>
         {% for b in buildings %}
         <option value="{{ b.location_id }}" data-address="{{ b.address or '' }}"
@@ -58,7 +59,7 @@
 
     <div class="field">
       <label for="item_type">Item type</label>
-      <select id="item_type" name="item_type" required>
+      <select class="pure-input-1" id="item_type" name="item_type" required>
         <option value="">Choose type...</option>
         {% for t in item_types %}
         <option value="{{ t.item_id }}"
@@ -69,7 +70,7 @@
 
     <div class="field">
       <label for="details">More details (optional)</label>
-      <textarea id="details" name="details" rows="4" placeholder="Some color Item. Found at some location">{{ form.details if form }}</textarea>
+      <textarea class="pure-input-1" id="details" name="details" rows="4" placeholder="Some color Item. Found at some location">{{ form.details if form }}</textarea>
     </div>
 
     <div>
@@ -79,10 +80,10 @@
 
     {% if post %}
     <button type="submit" class="pure-button button-primary">Save changes</button>
-    <a href="{{ url_for('my_posts') }}">Cancel</a>
+    <a class="pure-button" href="{{ url_for('my_posts') }}">Cancel</a>
     {% else %}
     <button type="submit" class="pure-button button-primary">Post item</button>
-    <a class="pure-button button-secondary" href="{{ url_for('index') }}">Cancel</a>
+    <a class="pure-button" href="{{ url_for('index') }}">Cancel</a>
     {% endif %}
   </form>
 </div>
