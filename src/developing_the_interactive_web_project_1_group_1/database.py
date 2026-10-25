@@ -280,10 +280,10 @@ def delete_post(post_id, user_id):
                 cur.execute("DELETE FROM images WHERE photo_id = %s", (row['photo_id'],))
 
 def delete_expired_posts():
-    pool.open()
     with pool.connection() as conn:
         with conn.cursor() as cur:
             # TODO: delete associated comments
+            #no need, comments are ON DELETE CASCADE, so they will be deleted regardless
 
             # delete posts and return a list of orphaned photos
             cur.execute(
@@ -297,3 +297,22 @@ def delete_expired_posts():
             photo_ids = [row['photo_id'] for row in cur.fetchall()]
             cur.execute("DELETE FROM images WHERE photo_id = ANY(%s)", [photo_ids])
  
+def get_comments_for_post(post_id):
+    with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT c.comment_id, c.comment_info, c.created_at, c.user_id, u.display_name
+                    FROM comments c
+                    JOIN users u ON u.user_id = c.user_id
+                    WHERE c.post_id = %s
+                    ORDER BY c.created_at ASC
+                """, (post_id,))
+                return cur.fetchall()
+
+def create_comment(post_id, user_id, comment_info):
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO comments (post_id, user_id, comment_info)
+                VALUES (%s,%s,%s)
+            """, (post_id,user_id,comment_info))
