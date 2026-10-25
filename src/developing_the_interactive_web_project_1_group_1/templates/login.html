@@ -5,6 +5,7 @@
   <h1>Login</h1>
   <p>You need an account to post or comment.</p>
   <form method="post" action="#">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <label for="email">UMN e-mail</label>
     <input type="email" id="email" name="email" placeholder="x500@umn.edu" required>
     <label for="password">Password</label>

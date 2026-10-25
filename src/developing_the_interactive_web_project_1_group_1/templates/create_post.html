@@ -16,18 +16,26 @@
 
   {% if post %}
   <form action="{{ url_for('edit_post', post_id=post.post_id) }}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="field">
       <label for="photo">Photo</label>
-      <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="current photo of {{ post.title }}">
-      <input type="file" id="photo" name="photo" accept="image/*">
+      <label id="drag_and_drop" class="drag_and_drop">
+        <img id="photo-preview" src="{{ url_for('image', photo_id=post.photo_id) }}" alt="current photo of {{ post.title }}">
+        <span>Drag and drop a new image or click to upload </span>
+        <input type="file" id="photo" name="photo" accept="image/*">
+      </label>
       <p>Leave this empty to keep the current photo.</p>
     </div>
   {% else %}
   <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="field">
       <label for="photo">Photo</label>
-      <img src="https://picsum.photos/400/300" alt="">
-      <input type="file" id="photo" name="photo" accept="image/*" required>
+      <label id="drag_and_drop" class="drag_and_drop">
+        <img id="photo-preview" src="https://picsum.photos/400/300" alt="">
+        <span>Drag and drop a new image here! or click to upload </span>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+      </label>
     </div>
   {% endif %}
 
@@ -94,5 +102,35 @@
 
   buildingSelect.addEventListener('change', showDropOff);
   showDropOff();
+
+  var drag_drop = document.getElementById('drag_and_drop');
+  var photoInput = document.getElementById('photo');
+  var photoPreview = document.getElementById('photo-preview');
+  
+  function showPreview(file){
+    photoPreview.src = URL.createObjectURL(file);
+  }
+
+  photoInput.addEventListener('change', function(){
+    if(photoInput.files[0]) showPreview(photoInput.files[0]);
+  });
+
+  drag_drop.addEventListener('dragover', function(e){
+    e.preventDefault()
+  })
+
+  drag_drop.addEventListener('drop', function(e){
+    e.preventDefault()
+    var file = e.dataTransfer.files[0];
+    if(!file || !file.type.startsWith('image/')) return;
+
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    photoInput.files = dt.files;
+    showPreview(file);
+  });
+
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) { e.preventDefault(); });
 </script>
 {% endblock %}
