@@ -47,7 +47,7 @@
   <input type="hidden" name="building" value="{{ request.args.get('building', '') }}">
   <input type="hidden" name="item_type" value="{{ request.args.get('item_type', '') }}">
   <input type="hidden" name="limit" value="{{ limit + 20 }}">
-  <button type="submit">Load More</button>
+  <button class="pure-button" type="submit">Load More</button>
 </form>
 {% endif %}
 {% endblock %}

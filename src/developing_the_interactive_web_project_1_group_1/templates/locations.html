@@ -13,12 +13,12 @@
     {# clicking anywhere on the card moves the map to that building's pin.
        the name is a button so keyboard users can tab to it #}
     <li class="location-card" data-location-id="{{ b.location_id }}">
-      <button type="button" class="pure-button show-on-map">{{ b.building_name }}</button>
+      <button type="button" class="show-on-map">{{ b.building_name }}</button>
       <p>{{ b.address or 'Address coming soon.' }}</p>
       {% if b.address %}
       <button type="button" class="pure-button copy-address" data-address="{{ b.address }}">Copy address</button>
       {% endif %}
-      <a href="{{ url_for('index', building=b.location_id) }}" class="button">See items found here</a>
+      <a href="{{ url_for('index', building=b.location_id) }}" class="pure-button">See items found here</a>
     </li>
     {% endfor %}
   </ul>

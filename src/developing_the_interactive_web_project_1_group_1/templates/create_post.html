@@ -71,10 +71,10 @@
 
     {% if post %}
     <button type="submit" class="pure-button button-primary">Save changes</button>
-    <a href="{{ url_for('my_posts') }}">Cancel</a>
+    <a class="pure-button" href="{{ url_for('my_posts') }}">Cancel</a>
     {% else %}
     <button type="submit" class="pure-button button-primary">Post item</button>
-    <a class="pure-button button-secondary" href="{{ url_for('index') }}">Cancel</a>
+    <a class="pure-button" href="{{ url_for('index') }}">Cancel</a>
     {% endif %}
   </form>
 </div>

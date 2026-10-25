@@ -38,8 +38,8 @@ a {
   color: var(--maroon);
 }
 
-/* buttons + form controls, shared by every page */
-.pure-button, .button {
+/* our colors on top of Pure's buttons, shared by every page */
+.pure-button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -51,7 +51,7 @@ a {
   text-decoration: none;
 }
 
-.pure-button:hover, .button:hover {
+.pure-button:hover {
   background: var(--black);
   color: var(--white);
 }
@@ -523,13 +523,11 @@ main {
 }
 
 /* red delete button, used on view post and my posts */
-.owner-panel button,
 .delete-button {
   border-color: #b00020;
   color: #b00020;
 }
 
-.owner-panel button:hover,
 .delete-button:hover {
   background: #b00020;
   color: var(--white);
@@ -640,14 +638,13 @@ main {
   font-size: 0.9rem;
 }
 
-.location-list .copy-address,
-.location-list .button {
+.location-list .pure-button {
   display: inline-block;
   padding: 0.25rem 0.6rem;
   font-size: 0.85rem;
 }
 
-.location-list .button {
+.location-list a.pure-button {
   margin-left: 0.4rem;
 }
 
