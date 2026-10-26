@@ -247,7 +247,7 @@ main {
 /* maroon strip on top and shadow so each card stands out more from its neighbours */
 .item-card {
   height: 100%;
-  padding: 30px 15px;
+  padding: 30px 15px 20px;
   border: 1px solid var(--border);
   border-top: 5px solid var(--maroon);
   border-radius: 23px;
@@ -265,45 +265,43 @@ main {
 
 .item-info {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 0.75rem;
   margin-top: 20px;
 }
 
 .item-title {
-  flex: 1 1 0;
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   overflow-wrap: anywhere;
 }
 
-.item-title span {
-  display: block;
-  margin-top: 7px;
+.item-meta {
+  margin: 0;
   color: #666;
   font-size: 0.85rem;
-  font-weight: 400;
   white-space: nowrap;
 }
 
 .tags {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.4rem;
-  flex-shrink: 0;
   margin: 0;
   padding: 0;
   list-style: none;
   font-size: 14px;
 }
 
+.item-card .tags {
+  font-size: 13px;
+}
+
 /* bordered "bubble" tags, from Ray's PR */
 .tags li {
   padding: 0.2rem 0.5rem;
-  border: 1px solid black;
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   background: var(--white);
 }
