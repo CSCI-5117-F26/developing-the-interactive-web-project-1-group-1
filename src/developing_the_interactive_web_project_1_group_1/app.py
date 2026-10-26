@@ -350,7 +350,7 @@ def search_by_image():
     has_more = len(posts) > limit
 
     return render_template('index.html', posts=posts[:limit], has_more=has_more, limit=limit,
-                            buildings=database.get_buildings(), item_types=database.get_item_types())
+                            buildings=database.get_buildings(), item_types=database.get_item_types(), image_search = True)
 
     
 if __name__ == '__main__':
