@@ -739,6 +739,21 @@ main {
     position: static;
     margin-top: 0.75rem;
   }
+
+  .locations-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .locations-layout .map {
+    order: -1;
+    height: 300px;
+    min-height: 0;
+  }
+
+  .location-list {
+    max-height: none;
+    min-height: 0;
+  }
 }
 
 .field .drag_and_drop {
