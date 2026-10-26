@@ -21,7 +21,9 @@
       <label for="photo">Photo</label>
       <label id="drag_and_drop" class="drag_and_drop">
         <img id="photo-preview" src="{{ url_for('image', photo_id=post.photo_id) }}" alt="current photo of {{ post.title }}">
-        <span>Drag and drop a new image or click to upload </span>
+        <span>Drag and drop a new photo here</span>
+        <span class="upload-or">or</span>
+        <span class="upload-button"><span class="upload-icon">&uarr;</span> Select a file</span>
         <input type="file" id="photo" name="photo" accept="image/*">
       </label>
       <p>Leave this empty to keep the current photo.</p>
@@ -32,8 +34,10 @@
     <div class="field">
       <label for="photo">Photo</label>
       <label id="drag_and_drop" class="drag_and_drop">
-        <img id="photo-preview" src="https://picsum.photos/400/300" alt="">
-        <span>Drag and drop a new image here! or click to upload </span>
+        <img id="photo-preview" alt="" hidden>
+        <span>Drag and drop a photo here</span>
+        <span class="upload-or">or</span>
+        <span class="upload-button"><span class="upload-icon">&uarr;</span> Select a file</span>
         <input type="file" id="photo" name="photo" accept="image/*" required>
       </label>
     </div>
@@ -109,6 +113,7 @@
   
   function showPreview(file){
     photoPreview.src = URL.createObjectURL(file);
+    photoPreview.hidden = false;
   }
 
   photoInput.addEventListener('change', function(){
@@ -117,10 +122,16 @@
 
   drag_drop.addEventListener('dragover', function(e){
     e.preventDefault()
+    drag_drop.classList.add('dragging');
+  })
+
+  drag_drop.addEventListener('dragleave', function(){
+    drag_drop.classList.remove('dragging');
   })
 
   drag_drop.addEventListener('drop', function(e){
     e.preventDefault()
+    drag_drop.classList.remove('dragging');
     var file = e.dataTransfer.files[0];
     if(!file || !file.type.startsWith('image/')) return;
 

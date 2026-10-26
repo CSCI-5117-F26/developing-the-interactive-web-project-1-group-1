@@ -724,18 +724,20 @@ main {
 .field .drag_and_drop {
   position: relative;
   display: flex;
+  justify-content: center;
   align-items: center;
   text-align: center;
   flex-direction: column;
-  min-height: 200px;
+  min-height: 220px;
   width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 2px dashed #c4c4c4;
+  border-radius: 16px;
   background: var(--white);
-  padding: 1em;
+  padding: 2rem 1rem;
+  color: #444;
   font-weight: 400;
   margin-bottom: 0;
-  gap: 8px;
+  gap: 0.75rem;
   cursor: pointer;
 }
 
@@ -747,6 +749,46 @@ main {
 .drag_and_drop img{
   max-height: 300px;
   object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.drag_and_drop img[hidden] {
+  display: none;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: var(--maroon);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drag_and_drop:hover .upload-button {
+  border-color: var(--maroon);
+}
+
+.upload-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--maroon);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.upload-or {
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .drag_and_drop input[type="file"]{
