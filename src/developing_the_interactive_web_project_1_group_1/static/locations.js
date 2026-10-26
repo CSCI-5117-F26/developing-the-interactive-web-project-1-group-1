@@ -23,7 +23,6 @@ function showBuildingsMap(elementId, buildings, scrollZoom) {
       map.flyTo(marker.getLatLng(), 18);
       marker.openPopup();
 
-      // on phones the map is at the top of the page, so scroll up to it (but not when copying an address)
       if (window.innerWidth <= 700 && !event.target.classList.contains('copy-address')) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
