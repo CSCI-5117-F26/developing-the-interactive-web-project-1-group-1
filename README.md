@@ -23,6 +23,7 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 (one sentence per bullet, maximum 4 bullets):**
 
 * Login restriction that prevents non-UMN from registering with the site across email and Sign In With Google.
+* Database pooling, mostly as a result of debugging the strange errors from gunicorn.
 
 ## Testing Notes
 
