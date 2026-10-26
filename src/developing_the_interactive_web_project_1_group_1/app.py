@@ -9,6 +9,8 @@ from flask import Flask, request, render_template, redirect, session, url_for, a
 import developing_the_interactive_web_project_1_group_1.database as database
 import numpy as np
 import requests
+from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 
 from developing_the_interactive_web_project_1_group_1 import usernames
 
@@ -16,6 +18,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
+csrf = CSRFProtect(app)
 
 # 10MB limit
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
@@ -230,9 +233,10 @@ def view_post(post_id):
     post = database.get_post(post_id)
     if post is None:
         abort(404)
-
+    comments = database.get_comments_for_post(post_id)
     user = database.get_user(post['user_id'])
     is_users_post = session.get('user_id', None) == post['user_id']  
+    is_logged_in = 'user_id' in session
 
     buildings = database.get_buildings()
     # find the building that matches the tag_location number associated with our post
@@ -243,8 +247,22 @@ def view_post(post_id):
     item_type = next((i for i in item_types if i.get('item_id') == post['tag_item']), None)
 
     return render_template('view_post.html', post=post, user=user, building=building, 
-                           item_type=item_type, is_users_post=is_users_post)
+                           item_type=item_type, is_users_post=is_users_post, is_logged_in=is_logged_in, comments=comments)
 
+@app.route('/posts/<int:post_id>/comment', methods = ['POST'])
+@login_required
+def add_comment(post_id):
+    post = database.get_post(post_id)
+    if post is None:
+        abort(404)
+
+    comment_info = request.form.get('comment_info', '').strip()
+    if not comment_info or len(comment_info) > 1000:
+        return redirect(url_for('view_post', post_id=post_id))
+    database.create_comment(post_id, session['user_id'], comment_info)
+    return redirect(url_for('view_post', post_id=post_id))
+
+    
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_post(post_id):

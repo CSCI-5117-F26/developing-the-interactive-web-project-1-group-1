@@ -722,3 +722,40 @@ main {
     margin-top: 0.75rem;
   }
 }
+
+.field .drag_and_drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  min-height: 200px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 1em;
+  font-weight: 400;
+  margin-bottom: 0;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.field .drag_and_drop.dragging {
+  border-color: var(--maroon);
+  background: var(--off-white);
+}
+
+.drag_and_drop img{
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.drag_and_drop input[type="file"]{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}
