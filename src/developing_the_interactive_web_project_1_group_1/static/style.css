@@ -123,6 +123,7 @@ a {
 .account-options {
   position: absolute;
   right: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   min-width: 140px;
@@ -201,11 +202,30 @@ main {
   opacity: 0;
 }
 
-.search-form {
+.search-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.image-search-note {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+}
+
+.image-search-note a {
+  margin-left: 0.5rem;
 }
 
 /* item cards, layout adapted from the "Most Popular" cards in templatemo's Cyborg Gaming template:
@@ -224,7 +244,7 @@ main {
 /* maroon strip on top and shadow so each card stands out more from its neighbours */
 .item-card {
   height: 100%;
-  padding: 30px 15px;
+  padding: 30px 15px 20px;
   border: 1px solid var(--border);
   border-top: 5px solid var(--maroon);
   border-radius: 23px;
@@ -242,45 +262,43 @@ main {
 
 .item-info {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 0.75rem;
   margin-top: 20px;
 }
 
 .item-title {
-  flex: 1 1 0;
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   overflow-wrap: anywhere;
 }
 
-.item-title span {
-  display: block;
-  margin-top: 7px;
+.item-meta {
+  margin: 0;
   color: #666;
   font-size: 0.85rem;
-  font-weight: 400;
   white-space: nowrap;
 }
 
 .tags {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.4rem;
-  flex-shrink: 0;
   margin: 0;
   padding: 0;
   list-style: none;
   font-size: 14px;
 }
 
+.item-card .tags {
+  font-size: 13px;
+}
+
 /* bordered "bubble" tags, from Ray's PR */
 .tags li {
   padding: 0.2rem 0.5rem;
-  border: 1px solid black;
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   background: var(--white);
 }
@@ -695,23 +713,40 @@ main {
     position: static;
     margin-top: 0.75rem;
   }
+
+  .locations-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .locations-layout .map {
+    order: -1;
+    height: 300px;
+    min-height: 0;
+  }
+
+  .location-list {
+    max-height: none;
+    min-height: 0;
+  }
 }
 
 .field .drag_and_drop {
   position: relative;
   display: flex;
+  justify-content: center;
   align-items: center;
   text-align: center;
   flex-direction: column;
-  min-height: 200px;
+  min-height: 220px;
   width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 2px dashed #c4c4c4;
+  border-radius: 16px;
   background: var(--white);
-  padding: 1em;
+  padding: 2rem 1rem;
+  color: #444;
   font-weight: 400;
   margin-bottom: 0;
-  gap: 8px;
+  gap: 0.75rem;
   cursor: pointer;
 }
 
@@ -723,6 +758,46 @@ main {
 .drag_and_drop img{
   max-height: 300px;
   object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.drag_and_drop img[hidden] {
+  display: none;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: var(--maroon);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drag_and_drop:hover .upload-button {
+  border-color: var(--maroon);
+}
+
+.upload-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--maroon);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.upload-or {
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .drag_and_drop input[type="file"]{

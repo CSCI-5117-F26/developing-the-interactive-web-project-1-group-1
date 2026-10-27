@@ -18,10 +18,14 @@ function showBuildingsMap(elementId, buildings, scrollZoom) {
   });
 
   document.querySelectorAll('.location-card').forEach(function (card) {
-    card.addEventListener('click', function () {
+    card.addEventListener('click', function (event) {
       var marker = markers[card.dataset.locationId];
       map.flyTo(marker.getLatLng(), 18);
       marker.openPopup();
+
+      if (window.innerWidth <= 700 && !event.target.classList.contains('copy-address')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     });
   });
 
