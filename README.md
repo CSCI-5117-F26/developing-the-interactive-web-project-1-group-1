@@ -35,10 +35,29 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 
 ## Screenshots of Site
 
-**[Add a screenshot of each key page (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository)
-along with a very brief caption:**
+### 1. Home page
 
-![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
+![Home page](docs/screenshots/home-page.png)
+
+*The main page of the site with recently posted items and the ability to search by keyword or photo and filter by building and item type.*
+
+### 2. L&F locations
+
+![L&F locations](docs/screenshots/locations-page.png)
+
+*Shows major campus lost and found locations on an interactive map with a list that allows the user to copy addresses and see items at that location. Clicking on a building from the list centers the map on that location.*
+
+### 3. Post an item
+
+![Post an item](docs/screenshots/make-post-page.png)
+
+*Users can create a post on this page with a photo, title, location, item type, and optional details.*
+
+### 4. My posts
+
+![My posts](docs/screenshots/my-posts-page.png)
+
+*Lists all of the user's posts so they can easily edit or delete them.*
 
 
 ## Mock-up 
