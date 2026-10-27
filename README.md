@@ -24,6 +24,7 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 
 * Login restriction that prevents non-UMN from registering with the site across email and Sign In With Google.
 * Database pooling, mostly as a result of debugging the strange errors from gunicorn.
+* Semantic search using text or image input using Open AI CLIP model. 
 
 ## Testing Notes
 
