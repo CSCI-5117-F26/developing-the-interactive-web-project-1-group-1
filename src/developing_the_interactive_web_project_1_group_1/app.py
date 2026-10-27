@@ -7,6 +7,7 @@ from authlib.integrations.flask_client import OAuth, OAuthError
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, redirect, session, url_for, abort, Response, flash
 import developing_the_interactive_web_project_1_group_1.database as database
+from developing_the_interactive_web_project_1_group_1.clip_util import embed_img, embed_text
 import numpy as np
 import requests
 from flask_wtf.csrf import CSRFProtect
@@ -33,22 +34,22 @@ oauth.register(
     server_metadata_url=f'https://{os.environ["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
 )
 
-clip_api_url = os.environ["CLIP_API_URL"]
-def embed_img(photo):
+# clip_api_url = os.environ["CLIP_API_URL"]
+# def embed_img(photo):
     
-    response = requests.post(f"{clip_api_url}/embed-img", 
-                                files={
-                                    "file": (photo.filename or "image", photo.stream, photo.mimetype or "application/octet-stream",)},
-                                    timeout=60)
-    response.raise_for_status()
-    embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
-    return embedding
+#     response = requests.post(f"{clip_api_url}/embed-img", 
+#                                 files={
+#                                     "file": (photo.filename or "image", photo.stream, photo.mimetype or "application/octet-stream",)},
+#                                     timeout=60)
+#     response.raise_for_status()
+#     embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
+#     return embedding
     
-def embed_text(txt):
-    response = requests.post(f"{clip_api_url}/embed-text", json={"text": txt}, timeout= 60)
-    response.raise_for_status()
-    embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
-    return embedding
+# def embed_text(txt):
+#     response = requests.post(f"{clip_api_url}/embed-text", json={"text": txt}, timeout= 60)
+#     response.raise_for_status()
+#     embedding = np.asarray(response.json()["embedding"], dtype=np.float32)
+#     return embedding
 # cleanup_count is a global var and hack to track how many times index() has been
 # called. It is used to call cleanup operations on every Nth call specified by
 # CLEANUP_INTERVAL. This is being done because a more approp. solution of a

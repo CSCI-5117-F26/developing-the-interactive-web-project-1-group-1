@@ -3,34 +3,24 @@ import numpy as np
 import torch
 from PIL import Image
 from pillow_heif import register_heif_opener
-import time
 import os
+
 register_heif_opener()
 
 device = "cpu" 
 print("Using:", device)
 
 model_name = "ViT-B/32"
-print("loading mdoel ")
 cache_dir = os.path.abspath("./.cache/torch")
 os.makedirs(cache_dir, exist_ok=True)
 print("cache? :" ,os.path.exists(cache_dir))
 model, preprocess = clip.load(model_name, device=device, download_root=cache_dir)
-print("loaded mdoel ")
-
 model.eval()
-print(" eval loaded ")
-def embed_text(q):
-    print("im here ")
-    s = time.monotonic()
-    print("EMbed:starting ")
-    txt = clip.tokenize([q]).to(device)
-    print(f"EMbed:tokenized{time.monotonic()-s} ")
 
+def embed_text(q):
+    txt = clip.tokenize([q]).to(device)
     with torch.inference_mode():
         txt_emd = model.encode_text(txt)
-    print(f"encoded: in {time.monotonic()-s} ")
-    
     txt_emd = txt_emd.float()
     txt_emd = txt_emd/txt_emd.norm(dim=-1, keepdim= True)
     return txt_emd.cpu().numpy()[0].astype(np.float32)
