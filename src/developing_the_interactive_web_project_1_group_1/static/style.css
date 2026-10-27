@@ -38,8 +38,8 @@ a {
   color: var(--maroon);
 }
 
-/* buttons + form controls, shared by every page */
-button, .button {
+/* our colors on top of Pure's buttons, shared by every page */
+.pure-button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -51,33 +51,22 @@ button, .button {
   text-decoration: none;
 }
 
-button:hover, .button:hover {
+.pure-button:hover {
   background: var(--black);
   color: var(--white);
 }
 
 /* for the standout button like "I found something" */
-.btn-accent {
+.button-primary {
   border-color: var(--maroon);
   background: var(--maroon);
   color: var(--yellow);
 }
 
-.btn-accent:hover {
+.button-primary:hover {
   border-color: var(--yellow);
   background: var(--yellow);
   color: var(--maroon);
-}
-
-input,
-select,
-textarea {
-  padding: 0.55rem 0.8rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--white);
-  color: var(--black);
-  font: inherit;
 }
 
 /* header */
@@ -134,6 +123,7 @@ textarea {
 .account-options {
   position: absolute;
   right: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   min-width: 140px;
@@ -181,18 +171,6 @@ main {
   margin-bottom: 1rem;
 }
 
-.field label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-}
-
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-}
-
 .field img {
   display: block;
   max-width: 100%;
@@ -224,11 +202,38 @@ main {
   opacity: 0;
 }
 
-.search-form {
+.search-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.search-form select {
+  height: auto;
+}
+
+.search-form label {
+  margin: 0;
+}
+
+.image-search-note {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+}
+
+.image-search-note a {
+  margin-left: 0.5rem;
 }
 
 /* item cards, layout adapted from the "Most Popular" cards in templatemo's Cyborg Gaming template:
@@ -247,7 +252,7 @@ main {
 /* maroon strip on top and shadow so each card stands out more from its neighbours */
 .item-card {
   height: 100%;
-  padding: 30px 15px;
+  padding: 30px 15px 20px;
   border: 1px solid var(--border);
   border-top: 5px solid var(--maroon);
   border-radius: 23px;
@@ -265,45 +270,43 @@ main {
 
 .item-info {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 0.75rem;
   margin-top: 20px;
 }
 
 .item-title {
-  flex: 1 1 0;
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   overflow-wrap: anywhere;
 }
 
-.item-title span {
-  display: block;
-  margin-top: 7px;
+.item-meta {
+  margin: 0;
   color: #666;
   font-size: 0.85rem;
-  font-weight: 400;
   white-space: nowrap;
 }
 
 .tags {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.4rem;
-  flex-shrink: 0;
   margin: 0;
   padding: 0;
   list-style: none;
   font-size: 14px;
 }
 
+.item-card .tags {
+  font-size: 13px;
+}
+
 /* bordered "bubble" tags, from Ray's PR */
 .tags li {
   padding: 0.2rem 0.5rem;
-  border: 1px solid black;
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   background: var(--white);
 }
@@ -523,13 +526,11 @@ main {
 }
 
 /* red delete button, used on view post and my posts */
-.owner-panel button,
 .delete-button {
   border-color: #b00020;
   color: #b00020;
 }
 
-.owner-panel button:hover,
 .delete-button:hover {
   background: #b00020;
   color: var(--white);
@@ -640,14 +641,13 @@ main {
   font-size: 0.9rem;
 }
 
-.location-list .copy-address,
-.location-list .button {
+.location-list .pure-button {
   display: inline-block;
   padding: 0.25rem 0.6rem;
   font-size: 0.85rem;
 }
 
-.location-list .button {
+.location-list a.pure-button {
   margin-left: 0.4rem;
 }
 
@@ -721,4 +721,98 @@ main {
     position: static;
     margin-top: 0.75rem;
   }
+
+  .locations-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .locations-layout .map {
+    order: -1;
+    height: 300px;
+    min-height: 0;
+  }
+
+  .location-list {
+    max-height: none;
+    min-height: 0;
+  }
+}
+
+.field .drag_and_drop {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  min-height: 220px;
+  width: 100%;
+  border: 2px dashed #c4c4c4;
+  border-radius: 16px;
+  background: var(--white);
+  padding: 2rem 1rem;
+  color: #444;
+  font-weight: 400;
+  margin-bottom: 0;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.field .drag_and_drop.dragging {
+  border-color: var(--maroon);
+  background: var(--off-white);
+}
+
+.drag_and_drop img{
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.drag_and_drop img[hidden] {
+  display: none;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: var(--maroon);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drag_and_drop:hover .upload-button {
+  border-color: var(--maroon);
+}
+
+.upload-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--maroon);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.upload-or {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.drag_and_drop input[type="file"]{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
 }

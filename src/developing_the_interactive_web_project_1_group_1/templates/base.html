@@ -23,30 +23,27 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
           <img src="{{ url_for('static', filename='logo.png') }}" alt="Lost and Found home" />
         </a>
         <nav class="nav-links">
-          <a href="{{ url_for('index') }}">Found items</a>
           <a href="{{ url_for('locations') }}">L&amp;F locations</a>
         </nav>
       </div>
 
       <div class="header-right">
         <form action="{{ url_for('create_post') }}" method="get">
-          <button class="btn-accent">+ I found something</button>
+          <button class="pure-button button-primary">+ I found something</button>
         </form>
 
         {% if session.user %}
           <span>{{ session.display_name }}</span>
           <details class="account-menu">
-            <summary class="button">Account &#9662;</summary>
+            <summary class="pure-button">Account &#9662;</summary>
             <nav class="account-options">
               <a href="{{ url_for('my_posts') }}">My posts</a>
-              {# account page not built yet #}
-              <a href="#">Account</a>
               <a href="{{ url_for('logout') }}">Log out</a>
             </nav>
           </details>
         {% else %}
-          <form action="{{ url_for('login') }}" method="get">
-            <button>Log in</button>
+          <form class="pure-form" action="{{ url_for('login') }}" method="get">
+            <button class="pure-button">Log in</button>
           </form>
         {% endif %}
       </div>
@@ -63,10 +60,7 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
     {% block main %}{% endblock %}
     </main>
 
-    <footer class="site-footer">
-      Footer Block <br>
-      Fleshing out footer
-    </footer>
+    <footer class="site-footer"></footer>
     <script>
       // fade out the flash banners after 5 seconds
       setTimeout(function () {
