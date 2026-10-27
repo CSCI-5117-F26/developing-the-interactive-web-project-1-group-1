@@ -29,21 +29,21 @@ href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
 
       <div class="header-right">
         <form action="{{ url_for('create_post') }}" method="get">
-          <button class="btn-accent">+ I found something</button>
+          <button class="pure-button button-primary">+ I found something</button>
         </form>
 
         {% if session.user %}
           <span>{{ session.display_name }}</span>
           <details class="account-menu">
-            <summary class="button">Account &#9662;</summary>
+            <summary class="pure-button">Account &#9662;</summary>
             <nav class="account-options">
               <a href="{{ url_for('my_posts') }}">My posts</a>
               <a href="{{ url_for('logout') }}">Log out</a>
             </nav>
           </details>
         {% else %}
-          <form action="{{ url_for('login') }}" method="get">
-            <button>Log in</button>
+          <form class="pure-form" action="{{ url_for('login') }}" method="get">
+            <button class="pure-button">Log in</button>
           </form>
         {% endif %}
       </div>

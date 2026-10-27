@@ -38,8 +38,8 @@ a {
   color: var(--maroon);
 }
 
-/* buttons + form controls, shared by every page */
-button, .button {
+/* our colors on top of Pure's buttons, shared by every page */
+.pure-button {
   padding: 0.55rem 1.1rem;
   border: 1.5px solid var(--black);
   border-radius: var(--radius);
@@ -51,33 +51,22 @@ button, .button {
   text-decoration: none;
 }
 
-button:hover, .button:hover {
+.pure-button:hover {
   background: var(--black);
   color: var(--white);
 }
 
 /* for the standout button like "I found something" */
-.btn-accent {
+.button-primary {
   border-color: var(--maroon);
   background: var(--maroon);
   color: var(--yellow);
 }
 
-.btn-accent:hover {
+.button-primary:hover {
   border-color: var(--yellow);
   background: var(--yellow);
   color: var(--maroon);
-}
-
-input,
-select,
-textarea {
-  padding: 0.55rem 0.8rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--white);
-  color: var(--black);
-  font: inherit;
 }
 
 /* header */
@@ -180,18 +169,6 @@ main {
 
 .field {
   margin-bottom: 1rem;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-}
-
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
 }
 
 .field img {
@@ -541,13 +518,11 @@ main {
 }
 
 /* red delete button, used on view post and my posts */
-.owner-panel button,
 .delete-button {
   border-color: #b00020;
   color: #b00020;
 }
 
-.owner-panel button:hover,
 .delete-button:hover {
   background: #b00020;
   color: var(--white);
@@ -658,14 +633,13 @@ main {
   font-size: 0.9rem;
 }
 
-.location-list .copy-address,
-.location-list .button {
+.location-list .pure-button {
   display: inline-block;
   padding: 0.25rem 0.6rem;
   font-size: 0.85rem;
 }
 
-.location-list .button {
+.location-list a.pure-button {
   margin-left: 0.4rem;
 }
 

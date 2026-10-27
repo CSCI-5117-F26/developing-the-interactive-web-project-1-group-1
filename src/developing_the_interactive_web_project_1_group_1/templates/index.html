@@ -4,7 +4,7 @@
 <h1>Recently found on campus</h1>
 <p>Search by keyword or photo and filter by building and item type</p>
 <div class="search-row">
-<form action="{{ url_for('index') }}" method="get" role="search" class="search-form">
+<form action="{{ url_for('index') }}" method="get" role="search" class="pure-form search-form">
 <input type="search" id="q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search items... e.g. 'blue water bottle'">
 <select id="building" name="building">
   <option value="">Building: Any</option>
@@ -20,11 +20,11 @@
     {% if request.values.get('item_type') == t.item_id|string %}selected{% endif %}>{{ t.item_name }}</option>
   {% endfor %}
 </select>
-<button type="submit">Search</button>
+<button class="pure-button" type="submit">Search</button>
 </form>
-<form action="{{url_for('search_by_image')}}" method="post" enctype="multipart/form-data" class="search-form">
+<form action="{{url_for('search_by_image')}}" method="post" enctype="multipart/form-data" class="pure-form search-form">
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-<label for="search-photo" class="button">Search by Image</label>
+<label for="search-photo" class="pure-button">Search by Image</label>
 <input type="file" id="search-photo" name="photo" accept="image/*" hidden>
 <input type="hidden" name="building" value="">
 <input type="hidden" name="item_type" value="">
@@ -64,7 +64,7 @@
   <input type="hidden" name="building" value="{{ request.args.get('building', '') }}">
   <input type="hidden" name="item_type" value="{{ request.args.get('item_type', '') }}">
   <input type="hidden" name="limit" value="{{ limit + 20 }}">
-  <button type="submit">Load More</button>
+  <button class="pure-button" type="submit">Load More</button>
 </form>
 {% endif %}
 {% endblock %}
