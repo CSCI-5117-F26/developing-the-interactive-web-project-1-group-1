@@ -215,6 +215,14 @@ main {
   gap: 0.5rem;
 }
 
+.search-form select {
+  height: auto;
+}
+
+.search-form label {
+  margin: 0;
+}
+
 .image-search-note {
   width: fit-content;
   margin: 0 0 1rem;
