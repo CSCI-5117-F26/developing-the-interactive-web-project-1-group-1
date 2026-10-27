@@ -81,9 +81,12 @@ Please do not document required libraries. or libraries that are mentioned in th
 
 * Leaflet: interactive maps on he location and item pages
 * OpenStreetMap: map tiles for Leaflet, plus the building addresses and coordinates
+* Internal API: Hosted a local server to do CLIP inference since render peak ram limits were reached, clip_util shows exactly what functions are served by API. Branch DEMO-LOCAL-CLIP shows alternate implementation without using API however free tier render hosting would not work 
+
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
 here:**
 
+* Project uses CLIP by OpenAI (MIT License), see THIRD_PARTY_NOTICES.txt 
 ...
