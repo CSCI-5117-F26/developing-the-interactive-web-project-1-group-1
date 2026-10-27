@@ -13,8 +13,8 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 * Nipun Bhatnagar, bhatn058@umn.edu
 * Yassir Abdalla, abdal167@umn.edu
 * Ray Amberg, amber079@umn.edu
-* Kane Stirling stirl027@umn.edu
-* Blake Gabriel gabri354@umn.edu
+* Kane Stirling, stirl027@umn.edu
+* Blake Gabriel, gabri354@umn.edu
 
 
 ## Key Features
@@ -25,6 +25,7 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 * Login restriction that prevents non-UMN from registering with the site across email and Sign In With Google.
 * Database pooling, mostly as a result of debugging the strange errors from gunicorn.
 * Semantic search using text or image input using Open AI CLIP model. 
+* Interactive Leaflet map of major campus Lost & Found locations, linked to each item's pickup location, with addresses stored in the database.
 
 ## Testing Notes
 
