@@ -1,0 +1,818 @@
+:root {
+  --white: #ffffff;
+  --off-white: #fafaf8;
+  --black: #1a1a1a;
+  --maroon: #6d001f;
+  --yellow: #ffcc33;
+  --border: #e3e3e3;
+  --radius: 8px;
+  --page-width: 1360px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--off-white);
+  color: var(--black);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--maroon);
+}
+
+/* our colors on top of Pure's buttons, shared by every page */
+.pure-button {
+  padding: 0.55rem 1.1rem;
+  border: 1.5px solid var(--black);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.pure-button:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* for the standout button like "I found something" */
+.button-primary {
+  border-color: var(--maroon);
+  background: var(--maroon);
+  color: var(--yellow);
+}
+
+.button-primary:hover {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--maroon);
+}
+
+/* header */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  border-top: 4px solid var(--maroon);
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo img {
+  display: block;
+  height: 50px;
+  border-radius: var(--radius);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  padding: 0.25rem 0;
+  color: var(--black);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--maroon);
+}
+
+/* account dropdown in the header */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-options {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.account-options a {
+  padding: 0.5rem 1rem;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.account-options a:hover {
+  background: var(--off-white);
+}
+
+/* main content */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* footer */
+.site-footer {
+  padding: 1.5rem;
+  border-top: 4px solid var(--yellow);
+  background: var(--maroon);
+  color: var(--white);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* create post page */
+.post-page {
+  max-width: 640px;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field img {
+  display: block;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.form-error {
+  color: #b00020;
+  font-weight: 600;
+}
+
+.flash {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--maroon);
+  font-size: 0.9rem;
+  transition: opacity 0.5s;
+}
+
+.flash a {
+  margin-left: 0.5rem;
+}
+
+.flash-hidden {
+  opacity: 0;
+}
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.search-form select {
+  height: auto;
+}
+
+.search-form label {
+  margin: 0;
+}
+
+.image-search-note {
+  width: fit-content;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid var(--maroon);
+  border-radius: 4px;
+  background: var(--white);
+}
+
+.image-search-note a {
+  margin-left: 0.5rem;
+}
+
+/* item cards, layout adapted from the "Most Popular" cards in templatemo's Cyborg Gaming template:
+   https://templatemo.com/live/templatemo_579_cyborg_gaming (colors swapped for our own) */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 30px;
+  margin-bottom: 1.5rem;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+/* maroon strip on top and shadow so each card stands out more from its neighbours */
+.item-card {
+  height: 100%;
+  padding: 30px 15px 20px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--maroon);
+  border-radius: 23px;
+  background: var(--off-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.item-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 23px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 20px;
+}
+
+.item-title {
+  margin: 0;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.item-meta {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.item-card .tags {
+  font-size: 13px;
+}
+
+/* bordered "bubble" tags, from Ray's PR */
+.tags li {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--white);
+}
+
+/* Makes the item card a link without screwing up the styling */
+.item-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tags li::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.tags .location::before {
+  background: var(--maroon);
+}
+
+.tags .type::before {
+  background: var(--yellow);
+}
+
+/* my posts page, list layout adapted from the "Visit One Of Our Countries Now" section in templatemo's WoOx Travel template:
+   https://templatemo.com/live/templatemo_580_woox_travel (colors swapped for our own) */
+.post-list {
+  margin-top: 1.5rem;
+}
+
+/* each post is its own card, maroon strip on the left + shadow like the home feed cards */
+.post-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--maroon);
+  border-radius: 23px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.post-thumb {
+  flex: 0 0 280px;
+  width: 280px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 23px;
+}
+
+.post-content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-content h2 {
+  margin-bottom: 5px;
+  padding-right: 11rem;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.post-building {
+  display: block;
+  color: #afafaf;
+  font-size: 15px;
+}
+
+.post-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* view post page, cards match the rounded white boxes on the home feed */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--maroon);
+}
+
+.view-post {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 30px;
+  
+  /* stretch so the right column is as tall as the photo card */
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+
+.view-post-left,
+.view-post-right {
+  min-width: 0;
+}
+
+.view-post-left,
+.location-map,
+.description,
+.comments-box {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 23px;
+  background: var(--white);
+}
+
+.view-post-left h1 {
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.post-meta {
+  margin: 0.25rem 0 0.75rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.view-post-left img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--off-white);
+}
+
+.view-post-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* on this page the tags sit in a row above the photo instead of on a card */
+.view-post-left .tags {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.view-post-left .tags li {
+  padding: 0.3rem 0.8rem;
+  border-color: var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  font-weight: 500;
+}
+
+/* grows to fill the leftover column height so there's no gap under it */
+.location-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-top: 4px solid var(--maroon);
+}
+
+.location-map h2,
+.description h2,
+.comments-box h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.location-map h3 {
+  font-size: 1rem;
+}
+
+.hours {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* plain gray placeholder until the real map is wired up */
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 260px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #e0e0e0;
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* edit/delete sit under the photo, on the right */
+.owner-panel {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.owner-panel form,
+.post-actions form {
+  margin: 0;
+}
+
+/* red delete button, used on view post and my posts */
+.delete-button {
+  border-color: #b00020;
+  color: #b00020;
+}
+
+.delete-button:hover {
+  background: #b00020;
+  color: var(--white);
+}
+
+.description {
+  grid-column: 1 / -1;
+}
+
+.description p {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* shown when a post has no description */
+.empty-note {
+  color: #888;
+}
+
+/* bigger maroon heading with a line under it to set it apart from the comments (The heading Comments) */
+.comments-box h2 {
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--maroon);
+  font-size: 1.5rem;
+}
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-content p {
+  margin: 18px 0;
+}
+
+.post-info {
+  display: flex;
+  margin: 18px 0 0;
+  padding: 15px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+  color: #afafaf;
+  font-size: 14px;
+}
+
+.post-info li {
+  flex: 1;
+}
+
+.post-info li:nth-child(2) {
+  text-align: center;
+}
+
+.post-info li:last-child {
+  text-align: right;
+}
+
+/* L and F Locations */
+.map {
+  height: 300px;
+  margin: 1rem 0;
+  z-index: 0;
+}
+
+.locations-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.locations-layout .map {
+  /* Calculates content section height and expands map to fill */
+  height: calc(100vh - 285px);
+  min-height: 400px;
+  margin: 0;
+}
+
+.location-list {
+  /* Calculates content section height and expands map to fill */
+  max-height: calc(100vh - 285px);
+  min-height: 400px;
+  margin: 0;
+  padding: 4px 8px 4px 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.location-card {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.location-list p {
+  margin: 0.1rem 0 0.4rem;
+  font-size: 0.9rem;
+}
+
+.location-list .pure-button {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.location-list a.pure-button {
+  margin-left: 0.4rem;
+}
+
+.show-on-map {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.show-on-map:hover {
+  background: none;
+  color: var(--maroon);
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .view-post {
+    grid-template-columns: 1fr;
+  }
+
+  .view-post-left,
+  .location-map,
+  .description,
+  .comments-box {
+    padding: 16px;
+  }
+
+  .view-post-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .header-left,
+  .header-right {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1.25rem 1rem;
+  }
+
+  /* stack the my posts rows: photo on top, buttons back in the flow */
+  .post-row {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 16px;
+  }
+
+  .post-thumb {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .post-content h2 {
+    padding-right: 0;
+  }
+
+  .post-actions {
+    position: static;
+    margin-top: 0.75rem;
+  }
+
+  .locations-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .locations-layout .map {
+    order: -1;
+    height: 300px;
+    min-height: 0;
+  }
+
+  .location-list {
+    max-height: none;
+    min-height: 0;
+  }
+}
+
+.field .drag_and_drop {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  min-height: 220px;
+  width: 100%;
+  border: 2px dashed #c4c4c4;
+  border-radius: 16px;
+  background: var(--white);
+  padding: 2rem 1rem;
+  color: #444;
+  font-weight: 400;
+  margin-bottom: 0;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.field .drag_and_drop.dragging {
+  border-color: var(--maroon);
+  background: var(--off-white);
+}
+
+.drag_and_drop img{
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.drag_and_drop img[hidden] {
+  display: none;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: var(--maroon);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drag_and_drop:hover .upload-button {
+  border-color: var(--maroon);
+}
+
+.upload-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--maroon);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.upload-or {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.drag_and_drop input[type="file"]{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}

@@ -1,0 +1,65 @@
+CREATE TABLE users(
+    user_id SERIAL PRIMARY KEY,
+    auth_id VARCHAR(255) UNIQUE NOT NULL,
+    display_name VARCHAR(255) NOT NULL, /* For auto generate hidden name we mentioned,at server side*/
+    created_at TIMESTAMPTZ DEFAULT NOW() 
+    /*seeing a common theme online for timestamp on user at creation,
+     not 100% sure why yet but why not add it I guess */
+);
+
+/*NOTE you have to check the file type in server before sending...
+File type validation on server side, */
+CREATE TABLE images(
+photo_id SERIAL PRIMARY KEY,
+image_name VARCHAR(255) NOT NULL,
+image_data BYTEA NOT NULL
+);
+
+/*Created these tables so we can add building and item types for selection as we need */
+CREATE TABLE tag_building(
+    location_id SERIAL PRIMARY KEY,
+    building_name VARCHAR(100) NOT NULL UNIQUE,
+    address VARCHAR(255),
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
+);
+CREATE TABLE tag_itemtype(
+    item_id SERIAL PRIMARY KEY,
+    item_name VARCHAR(100) NOT NULL UNIQUE
+);
+/*So from what im seeing i need all references of id, 
+to be int, since SERIAL call auto increment creation of int*/
+CREATE TABLE posts (
+    post_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(user_id),
+    photo_id INT NOT NULL REFERENCES images(photo_id),
+    title TEXT NOT NULL,
+    tag_location INT NOT NULL REFERENCES tag_building(location_id),
+    tag_item INT NOT NULL REFERENCES tag_itemtype(item_id),
+
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+
+);
+/*Make comments a weak relationship to post, since will delete if posts is delete*/
+CREATE TABLE comments(
+    comment_id SERIAL PRIMARY KEY,
+    post_id INT NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    /*With userid can get display name from it, and ties ownership to them*/
+    user_id INT NOT NULL REFERENCES users(user_id),
+    comment_info TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+/* will need to add modifiy time stamptz later for posts*/
+/*guess timestamptz is the best since it has a defined timezone of UTC*/
+
+CREATE TABLE image_embeddings(
+    embedding_id SERIAL PRIMARY KEY,
+    photo_id INT NOT NULL REFERENCES images(photo_id) ON DELETE CASCADE,
+    embedding BYTEA NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS description_idx
+ON posts USING GIN (description gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS title_idx
+ON posts USING GIN (title gin_trgm_ops);

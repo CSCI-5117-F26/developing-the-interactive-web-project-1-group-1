@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Lost and Found{% endblock %}
+{% block main %}
+<h1>Recently found on campus</h1>
+<p>Search by keyword or photo and filter by building and item type</p>
+<div class="search-row">
+<form action="{{ url_for('index') }}" method="get" role="search" class="pure-form search-form">
+<input type="search" id="q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search items... e.g. 'blue water bottle'">
+<select id="building" name="building">
+  <option value="">Building: Any</option>
+  {% for b in buildings %}
+  <option value="{{ b.location_id }}"
+    {% if request.values.get('building') == b.location_id|string %}selected{% endif %}>{{ b.building_name }}</option>
+  {% endfor %}
+</select>
+<select id="item_type" name="item_type">
+  <option value="">Item Type: Any</option>
+  {% for t in item_types %}
+  <option value="{{ t.item_id }}"
+    {% if request.values.get('item_type') == t.item_id|string %}selected{% endif %}>{{ t.item_name }}</option>
+  {% endfor %}
+</select>
+<button class="pure-button" type="submit">Search</button>
+</form>
+<form action="{{url_for('search_by_image')}}" method="post" enctype="multipart/form-data" class="pure-form search-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+<label for="search-photo" class="pure-button">Search by Image</label>
+<input type="file" id="search-photo" name="photo" accept="image/*" hidden>
+<input type="hidden" name="building" value="">
+<input type="hidden" name="item_type" value="">
+</form>
+</div>
+
+{% if image_search %}
+<p class="image-search-note">
+  Showing items similar to your photo.
+  <a href="{{ url_for('index') }}">Show all items</a>
+</p>
+{% endif %}
+
+<div class="item-grid">
+{% for post in posts %}
+  <a href="{{ url_for('view_post', post_id=post.post_id) }}" class="item-card-link">
+    <div class="item-card">
+      <img src="{{ url_for('image', photo_id=post.photo_id) }}" alt="photo of {{ post.title }}" />
+      <div class="item-info">
+        <h3 class="item-title">{{ post.title }}</h3>
+        <ul class="tags">
+          <li class="location">{{ post.building_name }}</li>
+          <li class="type">{{ post.item_name }}</li>
+        </ul>
+        <p class="item-meta">{{ post.display_name }} &middot; {{ post.created_at|time_ago }}</p>
+      </div>
+    </div>
+  </a>
+{% else %}
+<p>No items found.</p>
+{% endfor %}
+</div>
+
+{% if has_more %}
+<form action="{{ url_for('index') }}" method="get">
+  <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+  <input type="hidden" name="building" value="{{ request.args.get('building', '') }}">
+  <input type="hidden" name="item_type" value="{{ request.args.get('item_type', '') }}">
+  <input type="hidden" name="limit" value="{{ limit + 20 }}">
+  <button class="pure-button" type="submit">Load More</button>
+</form>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+  var photoSearch = document.getElementById('search-photo');
+  var photoSearchLabel = document.querySelector('label[for="search-photo"]');
+
+  photoSearch.addEventListener('change', function () {
+    if (!photoSearch.files[0]) return;
+    var form = photoSearch.form;
+    form.building.value = document.getElementById('building').value;
+    form.item_type.value = document.getElementById('item_type').value;
+    photoSearchLabel.textContent = 'Searching...';
+    form.submit();
+  });
+
+  window.addEventListener('pageshow', function () {
+    photoSearch.value = '';
+    photoSearchLabel.textContent = 'Search by Image';
+  });
+</script>
+{% endblock %}
