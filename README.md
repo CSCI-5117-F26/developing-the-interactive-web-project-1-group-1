@@ -13,8 +13,8 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 * Nipun Bhatnagar, bhatn058@umn.edu
 * Yassir Abdalla, abdal167@umn.edu
 * Ray Amberg, amber079@umn.edu
-* Kane Stirling stirl027@umn.edu
-* Blake Gabriel gabri354@umn.edu
+* Kane Stirling, stirl027@umn.edu
+* Blake Gabriel, gabri354@umn.edu
 
 
 ## Key Features
@@ -22,21 +22,43 @@ CSCI 5117, Fall 2026, [assignment description](https://canvas.umn.edu/courses/57
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-* ...
+* Login restriction that prevents non-UMN from registering with the site across email and Sign In With Google.
+* Database pooling, mostly as a result of debugging the strange errors from gunicorn.
+* Semantic search using text or image input using Open AI CLIP model. 
+* Interactive Leaflet map of major campus Lost & Found locations, linked to each item's pickup location, with addresses stored in the database.
 
 ## Testing Notes
 
 **Is there anything special we need to know in order to effectively test your app? (optional):**
 
-* ...
+* Must utilize a verified umn.edu email address to register.
 
 
 ## Screenshots of Site
 
-**[Add a screenshot of each key page (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository)
-along with a very brief caption:**
+### 1. Home page
 
-![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
+![Home page](docs/screenshots/home-page.png)
+
+*The main page of the site with recently posted items and the ability to search by keyword or photo and filter by building and item type.*
+
+### 2. L&F locations
+
+![L&F locations](docs/screenshots/locations-page.png)
+
+*Shows major campus lost and found locations on an interactive map with a list that allows the user to copy addresses and see items at that location. Clicking on a building from the list centers the map on that location.*
+
+### 3. Post an item
+
+![Post an item](docs/screenshots/make-post-page.png)
+
+*Users can create a post on this page with a photo, title, location, item type, and optional details.*
+
+### 4. My posts
+
+![My posts](docs/screenshots/my-posts-page.png)
+
+*Lists all of the user's posts so they can easily edit or delete them.*
 
 
 ## Mock-up 
@@ -77,11 +99,14 @@ along with a very brief caption:**
 **Document integrations with 3rd Party code or services here.
 Please do not document required libraries. or libraries that are mentioned in the product requirements**
 
-* Library or service name: description of use
-* ...
+* Leaflet: interactive maps on he location and item pages
+* OpenStreetMap: map tiles for Leaflet, plus the building addresses and coordinates
+* Internal API: Hosted a local server to do CLIP inference since render peak ram limits were reached, clip_util shows exactly what functions are served by API. Branch DEMO-LOCAL-CLIP shows alternate implementation without using API however free tier render hosting would not work 
+
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
 here:**
 
+* Project uses CLIP by OpenAI (MIT License), see THIRD_PARTY_NOTICES.txt 
 ...
